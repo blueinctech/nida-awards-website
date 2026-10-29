@@ -1,0 +1,27 @@
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+.DS_Store
+
+# Secrets and local settings: never commit these
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+.npmrc
+
+# Logs and caches
+npm-debug.log*
+*.log
+__pycache__/
+*.pyc
+
+# OS / editor files
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/

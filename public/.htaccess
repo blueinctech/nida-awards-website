@@ -1,0 +1,18 @@
+# Apache settings for the NIDA static site (copied to dist/.htaccess by the build)
+ErrorDocument 404 /404.html
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/xml image/svg+xml
+</IfModule>
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType text/css "access plus 1 week"
+  ExpiresByType text/javascript "access plus 1 week"
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+# Old WordPress addresses that no longer exist
+Redirect 301 /service/mission/ /about-nida/
+Redirect 301 /service/vision/ /about-nida/

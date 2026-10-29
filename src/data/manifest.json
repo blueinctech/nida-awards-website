@@ -1,0 +1,870 @@
+{
+ "brand/nida-logo-white.png": {
+  "w": 726,
+  "h": 201
+ },
+ "brand/nida-logo-green.png": {
+  "w": 726,
+  "h": 201
+ },
+ "brand/fon-logo.png": {
+  "w": 301,
+  "h": 304
+ },
+ "brand/favicon.png": {
+  "w": 512,
+  "h": 512
+ },
+ "brand/trophy-gold.png": {
+  "w": 200,
+  "h": 673
+ },
+ "sponsors/taptap-send.png": {
+  "w": 400,
+  "h": 400
+ },
+ "sponsors/cps-africa.png": {
+  "w": 600,
+  "h": 309
+ },
+ "awardees/kachi-nwanna-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/kachi-nwanna-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/tolulope-ayeni-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/tolulope-ayeni-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/akinloye-bamigboye-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/akinloye-bamigboye-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/jude-edeh-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/jude-edeh-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/wale-gbadamosi-oyekanmi-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/wale-gbadamosi-oyekanmi-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/kayode-laro-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/kayode-laro-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/chidiebere-ikejemba-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/chidiebere-ikejemba-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/ozak-ejiofor-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/ozak-ejiofor-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/muftau-femi-ajose-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/muftau-femi-ajose-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/peju-oshin-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/peju-oshin-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/taiwo-tejumola-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/taiwo-tejumola-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/adeola-soyemi-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/adeola-soyemi-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/hakeem-adesanya-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/hakeem-adesanya-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/adeola-adeleye-fasubaa-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/adeola-adeleye-fasubaa-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/juliana-olayinka-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/juliana-olayinka-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/propel-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/propel-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/kehinde-salami-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/kehinde-salami-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/jolaade-alao-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/jolaade-alao-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/morin-oluwole-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/morin-oluwole-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/ejindu-morah-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/ejindu-morah-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/rasheedat-ajibade-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/rasheedat-ajibade-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/hassan-aliyu-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/hassan-aliyu-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/cynthia-asije-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/cynthia-asije-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/jeremiah-fisayo-bambi-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/jeremiah-fisayo-bambi-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/boy-dayvid-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/boy-dayvid-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "awardees/hajo-sani-360.webp": {
+  "w": 360,
+  "h": 457
+ },
+ "awardees/hajo-sani-594.webp": {
+  "w": 594,
+  "h": 754
+ },
+ "photos/2023-00-640.webp": {
+  "w": 640,
+  "h": 480
+ },
+ "photos/2023-00-1280.webp": {
+  "w": 1280,
+  "h": 960
+ },
+ "photos/2023-00-1920.webp": {
+  "w": 1920,
+  "h": 1440
+ },
+ "photos/2023-01-640.webp": {
+  "w": 640,
+  "h": 480
+ },
+ "photos/2023-01-1280.webp": {
+  "w": 1280,
+  "h": 960
+ },
+ "photos/2023-01-1920.webp": {
+  "w": 1920,
+  "h": 1440
+ },
+ "photos/2023-02-640.webp": {
+  "w": 640,
+  "h": 480
+ },
+ "photos/2023-02-1280.webp": {
+  "w": 1280,
+  "h": 960
+ },
+ "photos/2023-02-1920.webp": {
+  "w": 1920,
+  "h": 1440
+ },
+ "photos/2023-03-640.webp": {
+  "w": 640,
+  "h": 480
+ },
+ "photos/2023-03-1280.webp": {
+  "w": 1280,
+  "h": 960
+ },
+ "photos/2023-03-1920.webp": {
+  "w": 1920,
+  "h": 1440
+ },
+ "photos/2023-04-640.webp": {
+  "w": 640,
+  "h": 480
+ },
+ "photos/2023-04-1280.webp": {
+  "w": 1280,
+  "h": 960
+ },
+ "photos/2023-04-1920.webp": {
+  "w": 1920,
+  "h": 1440
+ },
+ "photos/2023-05-640.webp": {
+  "w": 640,
+  "h": 486
+ },
+ "photos/2023-06-640.webp": {
+  "w": 640,
+  "h": 360
+ },
+ "photos/2023-06-1280.webp": {
+  "w": 1280,
+  "h": 720
+ },
+ "photos/2023-06-1920.webp": {
+  "w": 1920,
+  "h": 1080
+ },
+ "photos/2023-07-640.webp": {
+  "w": 640,
+  "h": 480
+ },
+ "photos/2023-07-1280.webp": {
+  "w": 1280,
+  "h": 960
+ },
+ "photos/2023-07-1920.webp": {
+  "w": 1920,
+  "h": 1440
+ },
+ "photos/2023-08-640.webp": {
+  "w": 640,
+  "h": 360
+ },
+ "photos/2023-08-1280.webp": {
+  "w": 1280,
+  "h": 720
+ },
+ "photos/2023-08-1920.webp": {
+  "w": 1920,
+  "h": 1080
+ },
+ "photos/2023-09-640.webp": {
+  "w": 640,
+  "h": 480
+ },
+ "photos/2023-09-1280.webp": {
+  "w": 1280,
+  "h": 960
+ },
+ "photos/2023-09-1920.webp": {
+  "w": 1920,
+  "h": 1440
+ },
+ "photos/2023-10-640.webp": {
+  "w": 640,
+  "h": 480
+ },
+ "photos/2023-10-1280.webp": {
+  "w": 1280,
+  "h": 960
+ },
+ "photos/2023-10-1920.webp": {
+  "w": 1920,
+  "h": 1440
+ },
+ "photos/2023-11-640.webp": {
+  "w": 640,
+  "h": 480
+ },
+ "photos/2023-11-1280.webp": {
+  "w": 1280,
+  "h": 960
+ },
+ "photos/2023-11-1920.webp": {
+  "w": 1920,
+  "h": 1440
+ },
+ "photos/2023-12-640.webp": {
+  "w": 640,
+  "h": 480
+ },
+ "photos/2023-12-1280.webp": {
+  "w": 1280,
+  "h": 960
+ },
+ "photos/2023-12-1920.webp": {
+  "w": 1920,
+  "h": 1440
+ },
+ "photos/2023-13-640.webp": {
+  "w": 640,
+  "h": 480
+ },
+ "photos/2023-13-1280.webp": {
+  "w": 1280,
+  "h": 960
+ },
+ "photos/2023-13-1920.webp": {
+  "w": 1920,
+  "h": 1440
+ },
+ "photos/2023-14-640.webp": {
+  "w": 640,
+  "h": 480
+ },
+ "photos/2023-14-1280.webp": {
+  "w": 1280,
+  "h": 960
+ },
+ "photos/2023-14-1920.webp": {
+  "w": 1920,
+  "h": 1440
+ },
+ "photos/2023-15-640.webp": {
+  "w": 640,
+  "h": 360
+ },
+ "photos/2023-15-1280.webp": {
+  "w": 1280,
+  "h": 720
+ },
+ "photos/2023-15-1920.webp": {
+  "w": 1920,
+  "h": 1080
+ },
+ "photos/2023-16-640.webp": {
+  "w": 640,
+  "h": 360
+ },
+ "photos/2023-16-1280.webp": {
+  "w": 1280,
+  "h": 720
+ },
+ "photos/2023-16-1920.webp": {
+  "w": 1920,
+  "h": 1080
+ },
+ "photos/2023-17-640.webp": {
+  "w": 640,
+  "h": 360
+ },
+ "photos/2023-17-1280.webp": {
+  "w": 1280,
+  "h": 720
+ },
+ "photos/2023-17-1920.webp": {
+  "w": 1920,
+  "h": 1080
+ },
+ "photos/2023-18-640.webp": {
+  "w": 640,
+  "h": 480
+ },
+ "photos/2023-18-1280.webp": {
+  "w": 1280,
+  "h": 960
+ },
+ "photos/2023-18-1920.webp": {
+  "w": 1920,
+  "h": 1440
+ },
+ "photos/2023-19-640.webp": {
+  "w": 640,
+  "h": 480
+ },
+ "photos/2023-19-1280.webp": {
+  "w": 1280,
+  "h": 960
+ },
+ "photos/2023-19-1920.webp": {
+  "w": 1920,
+  "h": 1440
+ },
+ "photos/2023-20-640.webp": {
+  "w": 640,
+  "h": 480
+ },
+ "photos/2023-20-1280.webp": {
+  "w": 1280,
+  "h": 960
+ },
+ "photos/2023-20-1920.webp": {
+  "w": 1920,
+  "h": 1440
+ },
+ "photos/2023-21-640.webp": {
+  "w": 640,
+  "h": 480
+ },
+ "photos/2023-21-1280.webp": {
+  "w": 1280,
+  "h": 960
+ },
+ "photos/2023-21-1920.webp": {
+  "w": 1920,
+  "h": 1440
+ },
+ "photos/2023-22-640.webp": {
+  "w": 640,
+  "h": 480
+ },
+ "photos/2023-22-1280.webp": {
+  "w": 1280,
+  "h": 960
+ },
+ "photos/2023-22-1920.webp": {
+  "w": 1920,
+  "h": 1440
+ },
+ "photos/2023-23-640.webp": {
+  "w": 640,
+  "h": 480
+ },
+ "photos/2023-23-1280.webp": {
+  "w": 1280,
+  "h": 960
+ },
+ "photos/2023-23-1920.webp": {
+  "w": 1920,
+  "h": 1440
+ },
+ "photos/2024-24-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-25-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-26-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-27-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-28-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-29-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-30-640.webp": {
+  "w": 640,
+  "h": 488
+ },
+ "photos/2024-31-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-32-640.webp": {
+  "w": 640,
+  "h": 428
+ },
+ "photos/2024-33-640.webp": {
+  "w": 640,
+  "h": 454
+ },
+ "photos/2024-34-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-35-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-36-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-36-1280.webp": {
+  "w": 1280,
+  "h": 853
+ },
+ "photos/2024-36-1920.webp": {
+  "w": 1920,
+  "h": 1280
+ },
+ "photos/2024-37-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-37-1280.webp": {
+  "w": 1280,
+  "h": 853
+ },
+ "photos/2024-37-1920.webp": {
+  "w": 1920,
+  "h": 1280
+ },
+ "photos/2024-38-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-38-1280.webp": {
+  "w": 1280,
+  "h": 853
+ },
+ "photos/2024-38-1920.webp": {
+  "w": 1920,
+  "h": 1280
+ },
+ "photos/2024-39-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-39-1280.webp": {
+  "w": 1280,
+  "h": 853
+ },
+ "photos/2024-39-1920.webp": {
+  "w": 1920,
+  "h": 1280
+ },
+ "photos/2024-40-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-40-1280.webp": {
+  "w": 1280,
+  "h": 855
+ },
+ "photos/2024-40-1920.webp": {
+  "w": 1920,
+  "h": 1282
+ },
+ "photos/2024-41-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-41-1280.webp": {
+  "w": 1280,
+  "h": 853
+ },
+ "photos/2024-41-1920.webp": {
+  "w": 1920,
+  "h": 1280
+ },
+ "photos/2024-42-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-42-1280.webp": {
+  "w": 1280,
+  "h": 853
+ },
+ "photos/2024-42-1920.webp": {
+  "w": 1920,
+  "h": 1280
+ },
+ "photos/2024-43-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-43-1280.webp": {
+  "w": 1280,
+  "h": 853
+ },
+ "photos/2024-43-1920.webp": {
+  "w": 1920,
+  "h": 1280
+ },
+ "photos/2024-44-640.webp": {
+  "w": 640,
+  "h": 463
+ },
+ "photos/2024-44-1280.webp": {
+  "w": 1280,
+  "h": 927
+ },
+ "photos/2024-44-1920.webp": {
+  "w": 1920,
+  "h": 1390
+ },
+ "photos/2024-45-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-45-1280.webp": {
+  "w": 1280,
+  "h": 853
+ },
+ "photos/2024-45-1920.webp": {
+  "w": 1920,
+  "h": 1280
+ },
+ "photos/2024-46-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-46-1280.webp": {
+  "w": 1280,
+  "h": 853
+ },
+ "photos/2024-46-1920.webp": {
+  "w": 1920,
+  "h": 1280
+ },
+ "photos/2024-47-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-47-1280.webp": {
+  "w": 1280,
+  "h": 853
+ },
+ "photos/2024-47-1920.webp": {
+  "w": 1920,
+  "h": 1280
+ },
+ "photos/2024-48-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-48-1280.webp": {
+  "w": 1280,
+  "h": 853
+ },
+ "photos/2024-48-1920.webp": {
+  "w": 1920,
+  "h": 1280
+ },
+ "photos/2024-49-640.webp": {
+  "w": 640,
+  "h": 404
+ },
+ "photos/2024-49-1280.webp": {
+  "w": 1280,
+  "h": 809
+ },
+ "photos/2024-49-1920.webp": {
+  "w": 1920,
+  "h": 1213
+ },
+ "photos/2024-50-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-50-1280.webp": {
+  "w": 1280,
+  "h": 853
+ },
+ "photos/2024-50-1920.webp": {
+  "w": 1920,
+  "h": 1280
+ },
+ "photos/2024-51-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-51-1280.webp": {
+  "w": 1280,
+  "h": 853
+ },
+ "photos/2024-51-1920.webp": {
+  "w": 1920,
+  "h": 1280
+ },
+ "photos/2024-52-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-52-1280.webp": {
+  "w": 1280,
+  "h": 853
+ },
+ "photos/2024-52-1920.webp": {
+  "w": 1920,
+  "h": 1280
+ },
+ "photos/2024-53-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2024-53-1280.webp": {
+  "w": 1280,
+  "h": 853
+ },
+ "photos/2024-53-1920.webp": {
+  "w": 1920,
+  "h": 1280
+ },
+ "photos/2025-54-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2025-55-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2025-56-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2025-57-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2025-58-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2025-59-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2025-60-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2025-61-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2025-62-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2025-63-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2025-64-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2025-65-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2023-66-640.webp": {
+  "w": 640,
+  "h": 360
+ },
+ "photos/2023-67-640.webp": {
+  "w": 640,
+  "h": 450
+ },
+ "photos/2023-67-1280.webp": {
+  "w": 1280,
+  "h": 900
+ },
+ "photos/2023-67-1920.webp": {
+  "w": 1920,
+  "h": 1350
+ },
+ "photos/2023-68-640.webp": {
+  "w": 640,
+  "h": 450
+ },
+ "photos/2023-68-1280.webp": {
+  "w": 1280,
+  "h": 900
+ },
+ "photos/2023-68-1920.webp": {
+  "w": 1920,
+  "h": 1350
+ },
+ "photos/2025-69-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2025-70-640.webp": {
+  "w": 640,
+  "h": 427
+ },
+ "photos/2025-71-640.webp": {
+  "w": 640,
+  "h": 427
+ }
+}
