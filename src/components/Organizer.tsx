@@ -14,7 +14,7 @@ export default function Organizer({ variant }: { variant: 'home' | 'about' }) {
           <img src={asset('img/brand/fon-logo.png')} width={301} height={304} alt="Friends of Nigeria (FON) Europe logo" loading="lazy" />
         </div>
         <div>
-          <h2 className="h3" id="org-title" data-reveal="" style={{ fontSize: 'clamp(1.6rem,1.1rem + 1.8vw,2.6rem)', lineHeight: 1.1 }}>{o.name}</h2>
+          <h2 className="h2" id="org-title" data-reveal="">{o.name}</h2>
           <div className="prose" style={{ marginTop: '1.5rem' }} data-reveal="">
             <p>{o.summary}</p>
             <p>{o.network}</p>

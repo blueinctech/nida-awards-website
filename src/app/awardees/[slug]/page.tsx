@@ -3,7 +3,7 @@ import SiteShell from '@/components/SiteShell';
 import ShareBar from '@/components/ShareBar';
 import { PortraitImg } from '@/components/images';
 import { Arrow, Prev, Star } from '@/components/icons';
-import { awardeeUrl, awardees, byYear, bySlug, d, hasAccents, page, site, type Awardee } from '@/lib/data';
+import { awardeeUrl, awardees, byYear, bySlug, d, page, site, type Awardee } from '@/lib/data';
 import { pageMetadata } from '@/lib/meta';
 
 // One page per honouree: /awardees/<slug>/, generated from src/data/awardees.json
@@ -36,7 +36,6 @@ export async function generateMetadata({ params }: Props) {
   });
 }
 
-const accents = (name: string) => (hasAccents(name) ? ' has-accents' : '');
 
 export default async function AwardeePage({ params }: Props) {
   const a = bySlug[(await params).slug];
@@ -85,7 +84,7 @@ export default async function AwardeePage({ params }: Props) {
             <div className="honouree__intro">
               <nav className="breadcrumb" aria-label="Breadcrumb"><ol><li><a href={page('')}>Home</a></li><li><a href={page('awardees')}>Awardees</a></li><li aria-current="page">{a.name}</li></ol></nav>
               <p className="honouree__edition" data-hero-fade="" style={d('.15s')}><span>NIDA {a.year}</span>{ed ? ` · ${ed.ordinal}` : ''}</p>
-              <h1 className={'honouree__name' + accents(a.name)} id="honouree-name" data-hero-fade="" style={d('.2s')}>{a.name}</h1>
+              <h1 className="honouree__name" id="honouree-name" data-hero-fade="" style={d('.2s')}>{a.name}</h1>
               <p className="honouree__award" data-hero-fade="" style={d('.28s')}><Star /><span>{a.award}</span></p>
               <div data-hero-fade="" style={d('.36s')}><ShareBar url={pageUrl} title={`${a.name}, NIDA ${a.year}`} text={shareText} theme="dark" /></div>
             </div>
@@ -124,7 +123,7 @@ export default async function AwardeePage({ params }: Props) {
                   <li className="awardee-card" key={m.slug}>
                     <a className="awardee-card__btn" href={awardeeUrl(m.slug)}>
                       <span className={'awardee-card__media' + (m.slug === 'propel' ? ' awardee-card__media--logo' : '')}><PortraitImg slug={m.slug} sizes="(max-width: 560px) 46vw, 22vw" alt={m.slug === 'propel' ? 'Propel logo' : ''} /></span>
-                      <span className={'awardee-card__name' + accents(m.name)}>{m.name}</span>
+                      <span className="awardee-card__name">{m.name}</span>
                       <span className="awardee-card__award">{m.award}</span>
                     </a>
                   </li>
@@ -136,8 +135,8 @@ export default async function AwardeePage({ params }: Props) {
 
         <nav className="honouree__pager" aria-label="Other honourees">
           <div className="container honouree__pager-grid">
-            <a href={awardeeUrl(prev.slug)} rel="prev"><small><Prev /> Previous</small><b className={accents(prev.name).trim()}>{prev.name}</b><span>{prev.award} · {prev.year}</span></a>
-            <a href={awardeeUrl(next.slug)} rel="next"><small>Next <Arrow /></small><b className={accents(next.name).trim()}>{next.name}</b><span>{next.award} · {next.year}</span></a>
+            <a href={awardeeUrl(prev.slug)} rel="prev"><small><Prev /> Previous</small><b>{prev.name}</b><span>{prev.award} · {prev.year}</span></a>
+            <a href={awardeeUrl(next.slug)} rel="next"><small>Next <Arrow /></small><b>{next.name}</b><span>{next.award} · {next.year}</span></a>
           </div>
         </nav>
       </article>

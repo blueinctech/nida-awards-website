@@ -1,7 +1,7 @@
 import SiteShell from '@/components/SiteShell';
 import PageHero from '@/components/PageHero';
 import { PortraitImg } from '@/components/images';
-import { awardeeUrl, awardees, byYear, hasAccents, site } from '@/lib/data';
+import { awardeeUrl, awardees, byYear, site } from '@/lib/data';
 import { pageMetadata } from '@/lib/meta';
 
 export const metadata = pageMetadata({
@@ -51,7 +51,7 @@ export default function AwardeesPage() {
                   <span className={'awardee-card__media' + (a.slug === 'propel' ? ' awardee-card__media--logo' : '')}>
                     <PortraitImg slug={a.slug} sizes="(max-width: 560px) 46vw, (max-width: 900px) 30vw, 22vw" alt={a.slug === 'propel' ? 'Propel logo' : ''} />
                   </span>
-                  <span className={'awardee-card__name' + (hasAccents(a.name) ? ' has-accents' : '')}>{a.name}</span>
+                  <span className="awardee-card__name">{a.name}</span>
                   <span className="awardee-card__award">{a.award}<span className="awardee-card__year"> · {a.year}</span></span>
                 </a>
               </li>

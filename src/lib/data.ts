@@ -32,8 +32,6 @@ export const bySlug: Record<string, Awardee> = Object.fromEntries(awardees.map((
 
 export const byYear = (y: number) => awardees.filter((a) => a.year === y);
 
-// Names with accented letters are set in the body font: the Nord display font has no accents.
-export const hasAccents = (s: string) => /[^\u0000-ɏ]|[À-ÿ]/.test(s) && /[À-ÿ]/.test(s);
 
 // Award title without the bracketed detail, e.g. "Male Professional of the Year"
 export const shortAward = (a: Awardee) => a.award.replace(/ \(.*\)/, '');

@@ -27,10 +27,14 @@ Accessibility note: `#01913C` and the golds do not meet WCAG AA contrast for sma
 
 ## 2. Typography found
 
-- **Nord** (Fontastica, served through the "Use Any Font" plugin) for display headings. It is an all-caps design and has no accented letters (é, ô, ú). **Please confirm NIDA's web licence for Nord covers the new site.**
-- **Montserrat** for body text; Roboto and Poppins appear in a few widgets.
+Verified on 30 October 2026 from the site's "Use Any Font" stylesheet (`/wp-content/uploads/useanyfont/uaf.css`) and the computed styles of the rendered pages (Home, About, Nomination, Contact, Gallery) at 1440px:
 
-New system: Nord for headlines (keeps the recognisable NIDA voice), Montserrat (self-hosted, SIL Open Font License) for everything else. Names with accents (Péjú Oshin) fall back to Montserrat automatically.
+- **ITC Avant Garde Gothic Medium** (`itc-avant-garde-me`) for every heading (`h1` to `h6`). Home hero "Celebrating Nigerians in Diaspora": 48px, line height 48px, weight 600 (synthesised from the Medium file). Section titles: 45px / 55px, 700. Inner page titles (ABOUT, CONTACT, NIDA GALLERY): 62px / 62px, 800, typed in capitals. Card titles: 24px / 34px, 600. Footer headings: 34px and 30px.
+- **Montserrat Medium** (`montserrat-medium`) for body, paragraphs and buttons. Paragraphs 18px / 28px, card text 16px / 26px. Buttons 16px / 28px, uppercase, 1.2px tracking. Navigation 16px / 30px, uppercase, 0.8px tracking. Form labels 14px, submit buttons 14px.
+- **Nord** only in the footer quick links (16px). An all-caps design with no accented letters.
+- There is no News, Awardees or Categories page on the original site: awards and honourees are sections of Home and About, `/awardees/` returns 404, and `/news/` is an unfinished theme template (placeholder Latin text).
+
+New system (section 13): an open-licence Avant Garde revival for headings, Montserrat for everything else.
 
 ## 3. Page inventory
 
@@ -161,3 +165,12 @@ Re-checked against nida-awards.org (Elementor kit `post-7.css`: primary `#01913C
 - **Ink colour across the site.** `--color-ink` (body text, form arrows, outline buttons, the honour-wall toggle and 35 border/shadow tints) changed from teal `#04171A` to `#03180C`, a shade of the brand forest green.
 - **Shared tokens.** Added channel tokens `--rgb-ink`, `--rgb-forest`, `--rgb-pine`, `--rgb-primary`, `--rgb-gold`, `--rgb-gold-deep`; every translucent brand colour in `main.css` and the contact page now uses them (`rgb(var(--rgb-gold) / .16)`), and the hard-coded gallery placeholder `#0b1a10` uses `--color-ink`. Remaining literals are white/black transparencies and the form error red.
 - **Checked rendered:** computed colours of every element on 10 pages show no blue or teal hue; full-page screenshots at 1440, 820 and 390 px; `next build` passes.
+
+## 13. Typography system and hero copy (30 October 2026)
+
+- **Display font.** Headings move from Nord (all capitals, no accents) to TeX Gyre Adventor, the GUST-licensed revival of ITC Avant Garde Gothic, the heading font nida-awards.org actually uses. Headings now show real upper and lower case, accented honouree names render in the display font (the Montserrat fallback for accented names is removed), and the Nord licence question no longer applies. Nord files removed.
+- **One token set.** About 130 separate `font-size` values in `main.css` are replaced by shared tokens for families, weights, sizes, line heights, letter spacing, paragraph spacing and line length (see README, "Fonts and typography"). Every heading level uses one size, weight and spacing on every page; the globe-section title, organiser name and save-the-date title now follow the H2 level instead of their own sizes; two inline font sizes in the page code are removed.
+- **Hero copy.** Headline "From Nigerian Roots / to Global Heights." (the official 2026 theme) on two lines at every width; supporting text cut from 21 to 14 words: "Celebrating Nigerians abroad whose achievements inspire communities and make a lasting global impact." Eyebrow, buttons, links, background and the moving photo wall unchanged.
+- **Biographies.** 17 to 18px at 1.8 line height, lines capped at 66 characters, 1.25em between paragraphs.
+- **Share images.** `tools/make_share.js` now uses the display font; the existing share images were not regenerated.
+- **Checked rendered:** 10 pages at 1440, 820, 390 and 360px; no horizontal overflow or clipped text; hero wall timings unchanged (80s, 92s, 72s desktop; 70s tablet and phone); `next build` passes.

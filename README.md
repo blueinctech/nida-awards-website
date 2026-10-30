@@ -88,6 +88,31 @@ raw/                     original images downloaded from nida-awards.org
 
 Pages are React Server Components rendered to static HTML at build time. The interactive parts (`src/scripts/`) are small plain-JavaScript enhancements that run once the page has loaded; every page is fully readable without them. Pages link to each other with normal links, so each visit loads a complete, pre-rendered page.
 
-## Fonts
+## Fonts and typography
 
-Nord is the display font used on the current site (by Fontastica). Confirm the web licence before launch. Montserrat is under the SIL Open Font License (`public/assets/fonts/MONTSERRAT-OFL.txt`).
+Two families, as on nida-awards.org, both self-hosted in `public/assets/fonts/`:
+
+- **NIDA Display** for headings and key figures: TeX Gyre Adventor (GUST Font License, `ADVENTOR-GUST-FONT-LICENSE.txt`), the open-licence revival of ITC Avant Garde Gothic. nida-awards.org sets every heading in ITC Avant Garde Gothic Medium, so this keeps NIDA's heading voice without a commercial licence. The files are subsets (Latin, Latin Extended, Yoruba and Vietnamese accents), so every honouree name, including Péjú Oshin, renders in it.
+- **Montserrat** (SIL Open Font License, `MONTSERRAT-OFL.txt`) for paragraphs, labels, buttons, navigation and forms.
+
+All sizes, weights, line heights and letter spacing are tokens at the top of `src/styles/main.css` (`--fs-*`, `--fw-*`, `--lh-*`, `--ls-*`, `--para-gap`, `--measure`). Use the tokens or the `.display`, `.h1` to `.h4`, `.lead`, `.statement` and `.eyebrow` classes rather than new values, so headings at the same level look the same on every page.
+
+| Role | Font, weight | Size (360px to 1440px) | Line height | Tracking |
+| --- | --- | --- | --- | --- |
+| Display (home hero, closing headline) | Display bold | 40 to 72px | 1.04 | -0.025em |
+| H1 (page titles, honouree name) | Display bold | 36 to 60px | 1.06 | -0.025em |
+| H2 (section headings) | Display bold | 28 to 44px | 1.12 | -0.02em |
+| H3 (sub-sections, featured names) | Display bold | 20 to 26px | 1.22 | -0.012em |
+| H4 (card and panel titles) | Display bold | 17 to 19px | 1.3 | -0.005em |
+| Key figures | Display bold | 30 to 44px | 1 | -0.02em |
+| Statement | Montserrat 500 | 24 to 40px | 1.22 | -0.02em |
+| Mission and vision | Montserrat 500 | 18 to 24px | 1.4 | -0.01em |
+| Lead paragraph | Montserrat 400 | 17 to 20px | 1.6 | 0 |
+| Biography | Montserrat 400 | 17 to 18px (first paragraph 18 to 20px, 500) | 1.8 | 0 |
+| Body | Montserrat 400 | 16px (15px for supporting text) | 1.7 | 0 |
+| Small, caption | Montserrat 400 | 14px, 13px | 1.55 | 0 |
+| Eyebrow, label | Montserrat 600, uppercase | 12px (11px on cards) | 1.5 | 0.2em (0.12em) |
+| Button | Montserrat 600, uppercase | 13px (12px in the header) | 1.2 | 0.14em |
+| Navigation | Montserrat 600, uppercase | 12.5px | | 0.16em |
+
+Paragraphs are capped at 68 characters (biographies 66), with 1em between paragraphs (1.25em in biographies).

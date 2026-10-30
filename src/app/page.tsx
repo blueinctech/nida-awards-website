@@ -5,7 +5,7 @@ import { GlobeScript } from '@/components/ClientScripts';
 import { PhotoImg, PortraitImg, WallImg, photoLargest } from '@/components/images';
 import heroWall from '@/data/hero-wall.json';
 import { Arrow, Info, Pause } from '@/components/icons';
-import { asset, awardeeUrl, awardees, byYear, bySlug, d, hasAccents, page, photoById, shortAward, site, type Awardee } from '@/lib/data';
+import { asset, awardeeUrl, awardees, byYear, bySlug, d, page, photoById, shortAward, site, type Awardee } from '@/lib/data';
 import { pageMetadata } from '@/lib/meta';
 
 export const metadata = pageMetadata({
@@ -62,15 +62,15 @@ function Hero() {
       </div>
       <div className="container hero__grid">
         <div className="hero__copy">
-          <p className="eyebrow hero__eyebrow" data-hero-fade="" style={d('.1s')}><span>Nigerians in Diaspora Awards<span className="hero__eyebrow-extra"> · 2026 theme</span></span></p>
+          <p className="eyebrow hero__eyebrow" data-hero-fade="" style={d('.1s')}><span>Nigerians in Diaspora Awards<span className="hero__eyebrow-extra"> · 2026 Theme</span></span></p>
           <h1 className="hero__title" id="hero-title">
-            <span className="line"><span style={d('.15s')}>From Nigerian roots</span></span>{' '}
-            <span className="line"><span style={d('.22s')}>to <em>global heights.</em></span></span>
+            <span className="line"><span style={d('.15s')}>From Nigerian Roots</span></span>{' '}
+            <span className="line"><span style={d('.22s')}>to <em>Global Heights.</em></span></span>
           </h1>
-          <p className="hero__lead" data-hero-fade="" style={d('.3s')}>NIDA celebrates the outstanding achievements of Nigerians living abroad and promotes a positive narrative about their contributions to the world.</p>
+          <p className="hero__lead" data-hero-fade="" style={d('.3s')}>Celebrating Nigerians abroad whose achievements inspire communities and make a lasting global impact.</p>
           <div className="hero__actions" data-hero-fade="" style={d('.4s')}>
-            <a className="btn" href={page('awardees')}>Meet the awardees <Arrow className="arrow" /></a>
-            <a className="btn btn--ghost" href="#save-the-date">Save the date</a>
+            <a className="btn" href={page('awardees')}>Meet the Awardees <Arrow className="arrow" /></a>
+            <a className="btn btn--ghost" href="#save-the-date">Save the Date</a>
           </div>
         </div>
         <div className="hero__visual" data-hero-fade="" style={d('.15s')}>
@@ -279,12 +279,12 @@ function Featured() {
                   data-excerpt={excerpt(a)}
                   data-href={awardeeUrl(a.slug)}
                 >
-                  <span className="nm" style={hasAccents(a.name) ? { fontFamily: 'var(--font-body)', fontWeight: 700 } : undefined}>{a.name}</span>
+                  <span className="nm">{a.name}</span>
                   <span className="aw">{a.award}</span>
                 </button>
               ))}
             </div>
-            <p style={{ marginTop: '2.5rem' }} data-reveal=""><a className="btn" href={page('awardees')}>Meet the awardees <Arrow className="arrow" /></a></p>
+            <p style={{ marginTop: '2.5rem' }} data-reveal=""><a className="btn" href={page('awardees')}>Meet the Awardees <Arrow className="arrow" /></a></p>
           </div>
         </div>
       </div>
@@ -373,7 +373,7 @@ function Mosaic() {
           ))}
         </ul>
         <p className="mosaic__foot" data-reveal="">
-          <span className="muted" style={{ fontSize: '.875rem' }}>Photography from NIDA 2023, 2024 and 2025.</span>
+          <span className="muted">Photography from NIDA 2023, 2024 and 2025.</span>
           <a className="btn btn--ghost" href={page('gallery')}>View the gallery <Arrow className="arrow" /></a>
         </p>
       </div>

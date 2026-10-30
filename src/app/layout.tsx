@@ -24,7 +24,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   // Start loading the two main fonts straight away
-  preload('/assets/fonts/nord.woff2', { as: 'font', type: 'font/woff2', crossOrigin: '' });
+  preload('/assets/fonts/adventor-bold.woff2', { as: 'font', type: 'font/woff2', crossOrigin: '' });
   preload('/assets/fonts/montserrat-latin.woff2', { as: 'font', type: 'font/woff2', crossOrigin: '' });
   return (
     <html lang="en" suppressHydrationWarning>

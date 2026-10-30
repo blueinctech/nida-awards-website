@@ -13,10 +13,9 @@ const OUT = path.join(ROOT, 'public/assets/img/og/awardees');
 fs.mkdirSync(OUT, { recursive: true });
 const asset = (p) => 'file://' + path.join(ROOT, 'public', 'assets', p);
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
-const accents = (s) => /[À-ÿ]/.test(s);
 
 const page = (a) => `<!doctype html><html><head><meta charset="utf-8"><style>
-@font-face { font-family: Nord; src: url('${asset('fonts/nord.woff2')}'); font-weight: 700; }
+@font-face { font-family: 'NIDA Display'; src: url('${asset('fonts/adventor-bold.woff2')}'); font-weight: 700; }
 @font-face { font-family: Montserrat; src: url('${asset('fonts/montserrat-latin.woff2')}'); font-weight: 100 900; }
 @font-face { font-family: Montserrat; src: url('${asset('fonts/montserrat-latin-ext.woff2')}'); font-weight: 100 900; unicode-range: U+0100-02AF, U+1E00-1EFF; }
 * { box-sizing: border-box; margin: 0; }
@@ -28,7 +27,7 @@ body { width: 1200px; height: 630px; overflow: hidden; font-family: Montserrat, 
 .copy { position: absolute; left: 72px; top: 64px; bottom: 70px; width: 640px; display: flex; flex-direction: column; }
 .logo { width: 210px; }
 .eyebrow { margin-top: 48px; font-size: 18px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: #F5C566; }
-.name { margin-top: 18px; font-family: ${accents(a.name) ? 'Montserrat' : 'Nord'}, Montserrat, sans-serif; font-weight: 700; font-size: var(--fs); line-height: 1.04; letter-spacing: -.01em; }
+.name { margin-top: 18px; font-family: 'NIDA Display', Montserrat, sans-serif; font-weight: 700; font-size: var(--fs); line-height: 1.06; letter-spacing: -.025em; }
 .award { margin-top: 22px; font-size: 26px; font-weight: 600; line-height: 1.3; color: #F5C566; max-width: 600px; }
 .foot { margin-top: auto; font-size: 17px; letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.72); }
 .foot b { color: #fff; font-weight: 600; }
