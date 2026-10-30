@@ -309,10 +309,29 @@ ul[role='list'], ol[role='list'] { list-style: none; padding: 0; }
 /* ---------- Hero ---------- */
 .hero {
   position: relative; overflow: hidden; isolation: isolate;
-  background: var(--color-forest); color: var(--color-white);
+  background: var(--color-ink); color: var(--color-white);
   min-height: min(calc(100svh - var(--header-h)), 860px);
   display: grid; align-items: center;
   padding-block: clamp(2rem, 1rem + 3vw, 4.5rem);
+}
+/* Background: deep brand ink, a NIDA trophy-table photo, and brand-colour overlays.
+   Darkest behind the copy so the white and gold text stays clear; the photo shows most in the open middle. */
+.hero__bg { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.hero__bg img {
+  position: absolute; right: 0; bottom: 0; width: 76%; height: auto; max-height: 92%; aspect-ratio: 1600 / 865;
+  object-fit: cover; object-position: 30% 100%; opacity: .62; filter: saturate(.9) brightness(.9);
+  --fade: linear-gradient(90deg, transparent 0%, #000 40%), linear-gradient(180deg, transparent 0%, #000 38%);
+  mask-image: var(--fade); -webkit-mask-image: var(--fade);
+  mask-composite: intersect; -webkit-mask-composite: source-in;
+}
+.hero__bg::after {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(110% 85% at 0% 50%, rgb(var(--rgb-ink) / .92) 0%, rgb(var(--rgb-ink) / .6) 42%, rgb(var(--rgb-ink) / 0) 72%),
+    linear-gradient(0deg, var(--color-ink) 0%, rgb(var(--rgb-ink) / 0) 22%),
+    radial-gradient(70% 60% at 100% 0%, rgb(var(--rgb-pine) / .6) 0%, rgb(var(--rgb-pine) / 0) 70%),
+    linear-gradient(270deg, rgb(var(--rgb-ink) / .45) 0%, rgb(var(--rgb-ink) / 0) 35%),
+    linear-gradient(180deg, rgb(var(--rgb-forest) / .8) 0%, rgb(var(--rgb-forest) / 0) 18%);
 }
 .hero__grid { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5.5rem); align-items: center; }
 .hero__copy { position: relative; z-index: 2; max-width: 50rem; container-type: inline-size; }
@@ -375,6 +394,8 @@ ul[role='list'], ol[role='list'] { list-style: none; padding: 0; }
   .hero__grid { grid-template-columns: minmax(0, 1fr); gap: 1.6rem; }
   .hero__copy { max-width: 40rem; }
   .hero__visual { order: -1; margin-inline: calc(-1 * var(--gutter)); }
+  /* Stacked layout: the photo sits low and quieter, behind the buttons rather than the headline */
+  .hero__bg img { width: 100%; height: 58%; max-height: none; aspect-ratio: auto; object-position: 38% 100%; opacity: .45; }
   .honour-wall { height: auto; display: block; mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%); -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%); }
   .honour-wall__col { display: none; margin-top: 0 !important; }
   .honour-wall__col:first-child { display: block; }
@@ -398,10 +419,11 @@ ul[role='list'], ol[role='list'] { list-style: none; padding: 0; }
 @keyframes wall-left { from { transform: translateX(0); } to { transform: translateX(calc(-50% - 5px)); } }
 
 /* ---------- Page hero (inner pages) ---------- */
-.page-hero { position: relative; overflow: hidden; background: var(--color-forest); color: var(--color-white); padding-block: clamp(4rem, 3rem + 5vw, 8rem) clamp(3rem, 2rem + 4vw, 6rem); isolation: isolate; }
+.page-hero { position: relative; overflow: hidden; background: var(--color-ink); color: var(--color-white); padding-block: clamp(4rem, 3rem + 5vw, 8rem) clamp(3rem, 2rem + 4vw, 6rem); isolation: isolate; }
 .page-hero__bg { position: absolute; inset: 0; z-index: -1; }
-.page-hero__bg img { width: 100%; height: 100%; object-fit: cover; opacity: .5; }
-.page-hero__bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, var(--color-forest) 25%, rgb(var(--rgb-forest) / .35) 100%), linear-gradient(0deg, var(--color-forest) 0%, rgb(var(--rgb-forest) / 0) 45%); }
+.page-hero__bg img { width: 100%; height: 100%; object-fit: cover; opacity: .6; filter: saturate(.85); }
+/* Same treatment as the home hero: brand ink behind the text, the photo in its own colours, a forest blend under the header */
+.page-hero__bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgb(var(--rgb-ink) / .95) 22%, rgb(var(--rgb-ink) / .55) 62%, rgb(var(--rgb-ink) / .3) 100%), linear-gradient(0deg, var(--color-ink) 0%, rgb(var(--rgb-ink) / 0) 40%), linear-gradient(180deg, rgb(var(--rgb-forest) / .8) 0%, rgb(var(--rgb-forest) / 0) 22%); }
 .page-hero__title { font-family: var(--font-display); font-size: var(--fs-h1); line-height: 1; margin-top: var(--space-5); max-width: 16ch; }
 .page-hero__lead { margin-top: var(--space-5); max-width: 44rem; color: var(--color-on-dark-soft); font-size: var(--fs-lead); }
 .breadcrumb { font-size: var(--fs-meta); letter-spacing: .18em; text-transform: uppercase; color: var(--color-on-dark-soft); }
@@ -966,7 +988,7 @@ ul[role='list'], ol[role='list'] { list-style: none; padding: 0; }
 .rule-list .star-mark { color: var(--color-gold-deep); margin-top: .2rem; width: 1rem; height: 1rem; }
 
 /* ---------- Honouree page ---------- */
-.honouree__hero { position: relative; overflow: hidden; background: var(--color-forest); color: var(--color-white); padding-block: clamp(2.5rem, 2rem + 3vw, 5rem); isolation: isolate; }
+.honouree__hero { position: relative; overflow: hidden; background: radial-gradient(70% 80% at 100% 0%, rgb(var(--rgb-pine) / .55) 0%, rgb(var(--rgb-pine) / 0) 70%), linear-gradient(180deg, rgb(var(--rgb-forest) / .8) 0%, rgb(var(--rgb-forest) / 0) 22%), var(--color-ink); color: var(--color-white); padding-block: clamp(2.5rem, 2rem + 3vw, 5rem); isolation: isolate; }
 .honouree__hero-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(2rem, 5vw, 6rem); align-items: center; }
 .honouree__portrait { position: relative; aspect-ratio: 594 / 754; max-width: 440px; width: 100%; overflow: hidden; border-radius: 999px 999px 2px 2px; background: var(--color-pine); }
 .honouree__portrait img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; }

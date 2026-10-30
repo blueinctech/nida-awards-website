@@ -30,11 +30,25 @@ function Hero() {
   );
   return (
     <section className="hero" data-hero="" aria-labelledby="hero-title">
+      {/* Background only: a NIDA 2024 trophy table photo (nida-awards.org), cropped above the watermarks, under brand-colour overlays */}
+      <div className="hero__bg" aria-hidden="true">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={asset('img/hero/hero-trophies-1600.webp')}
+          srcSet={`${asset('img/hero/hero-trophies-960.webp')} 960w, ${asset('img/hero/hero-trophies-1600.webp')} 1600w`}
+          sizes="100vw"
+          width={1600}
+          height={865}
+          alt=""
+          decoding="async"
+          fetchPriority="low"
+        />
+      </div>
       <div className="container hero__grid">
         <div className="hero__copy">
           <p className="eyebrow hero__eyebrow" data-hero-fade="" style={d('.1s')}><span>Nigerians in Diaspora Awards<span className="hero__eyebrow-extra"> · 2026 theme</span></span></p>
           <h1 className="hero__title" id="hero-title">
-            <span className="line"><span style={d('.15s')}>From Nigerian roots</span></span>
+            <span className="line"><span style={d('.15s')}>From Nigerian roots</span></span>{' '}
             <span className="line"><span style={d('.22s')}>to <em>global heights.</em></span></span>
           </h1>
           <p className="hero__lead" data-hero-fade="" style={d('.3s')}>NIDA celebrates the outstanding achievements of Nigerians living abroad and promotes a positive narrative about their contributions to the world.</p>
