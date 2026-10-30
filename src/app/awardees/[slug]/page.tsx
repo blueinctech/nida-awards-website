@@ -83,9 +83,8 @@ export default async function AwardeePage({ params }: Props) {
             </div>
             <div className="honouree__intro">
               <nav className="breadcrumb" aria-label="Breadcrumb"><ol><li><a href={page('')}>Home</a></li><li><a href={page('awardees')}>Awardees</a></li><li aria-current="page">{a.name}</li></ol></nav>
-              <p className="honouree__edition" data-hero-fade="" style={d('.15s')}><span>NIDA {a.year}</span>{ed ? ` · ${ed.ordinal}` : ''}</p>
               <h1 className="honouree__name" id="honouree-name" data-hero-fade="" style={d('.2s')}>{a.name}</h1>
-              <p className="honouree__award" data-hero-fade="" style={d('.28s')}><Star /><span>{a.award}</span></p>
+              <p className="honouree__award" data-hero-fade="" style={d('.28s')}><Star /><span>{a.award}<span className="honouree__edition">NIDA {a.year}{ed ? `, ${ed.ordinal.toLowerCase()}` : ''}</span></span></p>
               <div data-hero-fade="" style={d('.36s')}><ShareBar url={pageUrl} title={`${a.name}, NIDA ${a.year}`} text={shareText} theme="dark" /></div>
             </div>
           </div>
@@ -94,7 +93,7 @@ export default async function AwardeePage({ params }: Props) {
         <div className="section section--light on-light honouree__body">
           <div className="container honouree__layout">
             <div className="honouree__bio">
-              <h2 className="honouree__h2">{isOrg ? 'About' : 'Biography'}</h2>
+              <h2 className="h3 honouree__h2">{isOrg ? `About ${a.name}` : 'Biography'}</h2>
               <div className="prose prose--bio">{a.bio.map((p, k) => <p key={k}>{p}</p>)}</div>
               {a.note ? <p className="profile__note"><b>Editorial note:</b> {a.note}</p> : null}
               <p className="honouree__source">Biography as published by NIDA for the {a.year} awards.</p>

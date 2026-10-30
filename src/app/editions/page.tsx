@@ -32,19 +32,19 @@ export default function EditionsPage() {
               <article className="edition-block" id={`nida-${e.year}`} aria-labelledby={`t-${e.year}`} key={e.year}>
                 <div className="edition-block__aside">
                   <h2 className="edition-block__year" id={`t-${e.year}`} data-reveal=""><span className="visually-hidden">NIDA </span>{e.year}</h2>
-                  <p className="eyebrow green" data-reveal="">{e.ordinal}</p>
+                  <p className="edition-block__ordinal" data-reveal="">{e.ordinal}</p>
                   <div className="edition-meta" data-reveal="">
                     <dl>
                       <div><dt>Date</dt><dd>{e.date}</dd></div>
-                      <div><dt>Venue</dt><dd>{e.venue}<br /><span style={{ color: 'var(--color-ink-soft)', fontWeight: 400 }}>{e.city}</span></dd></div>
+                      <div><dt>Venue</dt><dd>{e.venue}<br /><span className="edition-meta__sub">{e.city}</span></dd></div>
                       {e.theme ? <div><dt>Theme</dt><dd>{e.theme}</dd></div> : null}
                     </dl>
                   </div>
                 </div>
                 <div>
                   <p className="lead" data-reveal="">{e.summary}</p>
-                  {e.stat ? <p className="edition-stat" style={{ marginTop: '2rem' }} data-reveal=""><b>{e.stat.value}</b><span>{e.stat.label}</span></p> : null}
-                  {e.pending ? <p className="edition-pending" style={{ marginTop: '2rem' }} data-reveal="">{e.pending}</p> : null}
+                  {e.stat ? <p className="edition-stat edition-block__stat" data-reveal=""><b>{e.stat.value}</b><span>{e.stat.label}</span></p> : null}
+                  {e.pending ? <p className="edition-pending edition-block__stat" data-reveal="">{e.pending}</p> : null}
                   {strip.length ? (
                     <div className="strip" data-lightbox-group="">
                       {strip.map((id) => (
@@ -59,7 +59,7 @@ export default function EditionsPage() {
                   ) : null}
                   {people.length ? (
                     <>
-                      <h3 className="eyebrow" style={{ marginTop: '3rem', color: 'var(--color-ink-soft)' }}>Honourees · {people.length}</h3>
+                      <h3 className="h4 edition-block__sub">Honourees</h3>
                       <ul className="honouree-rows" role="list">
                         {people.map((a) => (
                           <li key={a.slug}><a href={awardeeUrl(a.slug)}><PortraitImg slug={a.slug} sizes="56px" /><span><b>{a.name}</b><small>{a.award}</small></span><Arrow /></a></li>
@@ -67,7 +67,7 @@ export default function EditionsPage() {
                       </ul>
                     </>
                   ) : null}
-                  {strip.length ? <p style={{ marginTop: '2rem' }}><a className="link-arrow green" href={`${page('gallery')}?year=${e.year}`}>All NIDA {e.year} photographs <Arrow /></a></p> : null}
+                  {strip.length ? <p className="edition-block__more"><a className="link-arrow green" href={`${page('gallery')}?year=${e.year}`}>All NIDA {e.year} photographs <Arrow /></a></p> : null}
                 </div>
               </article>
             );

@@ -62,7 +62,6 @@ function Hero() {
       </div>
       <div className="container hero__grid">
         <div className="hero__copy">
-          <p className="eyebrow hero__eyebrow" data-hero-fade="" style={d('.1s')}><span>Nigerians in Diaspora Awards<span className="hero__eyebrow-extra"> · 2026 Theme</span></span></p>
           <h1 className="hero__title" id="hero-title">
             <span className="line"><span style={d('.15s')}>From Nigerian Roots</span></span>{' '}
             <span className="line"><span style={d('.22s')}>to <em>Global Heights.</em></span></span>
@@ -151,9 +150,9 @@ function GlobeIntro() {
             })}
           </ul>
           <div className="globe-spot" aria-hidden="true" data-spot="">
-            <p className="globe-spot__year" data-spot-year="">NIDA {first.year}</p>
             <p className="globe-spot__name" data-spot-name="">{first.name}</p>
             <p className="globe-spot__award" data-spot-award="">{shortAward(first)}</p>
+            <p className="globe-spot__year" data-spot-year="">NIDA {first.year}</p>
           </div>
           <button className="wall-toggle globe-toggle" type="button" data-globe-toggle="" aria-pressed="false" hidden><span data-globe-icon=""><Pause /></span><span data-globe-label="">Pause motion</span></button>
         </div>
@@ -183,8 +182,8 @@ function Mission() {
           <p className="lead" data-reveal="" style={d('.1s')}>Each NIDA gala brings together members of the African diaspora, friends of Africa and professionals from diverse industries for an evening of celebration, networking, culture and recognition.</p>
         </div>
         <div className="mission__pair">
-          <div className="mission__item" data-reveal=""><p className="mission__label">Mission</p><p>{site.mission}</p></div>
-          <div className="mission__item" data-reveal="" style={d('.12s')}><p className="mission__label">Vision</p><p>{site.vision}</p></div>
+          <div className="mission__item" data-reveal=""><h3 className="mission__title">Our mission</h3><p>{site.mission}</p></div>
+          <div className="mission__item" data-reveal="" style={d('.12s')}><h3 className="mission__title">Our vision</h3><p>{site.vision}</p></div>
         </div>
         <div className="attendees">
           <div data-reveal="">
@@ -240,13 +239,13 @@ function Categories() {
 // ---- Featured 2025 recipients (tabs driven by main.js) ----
 function Featured() {
   const featured = byYear(2025);
-  const excerpt = (a: Awardee) => a.bio[0].slice(0, 220) + '…';
+  // First ~200 characters of the biography, cut at a word boundary
+  const excerpt = (a: Awardee) => (a.bio[0].length <= 210 ? a.bio[0] : a.bio[0].slice(0, 210).replace(/[\s,;:–-]+\S*$/, '') + '…');
   return (
     <section className="section section--black" aria-labelledby="feature-title">
       <div className="container">
         <div className="section-head">
-          <p className="section-index" data-reveal="">The class of 2025</p>
-          <h2 className="h2" id="feature-title" data-reveal="" style={d('.06s')}>Meet the <span className="gold">honourees</span></h2>
+          <h2 className="h2" id="feature-title" data-reveal="">Meet the <span className="gold">class of 2025</span></h2>
           <p className="lead muted" data-reveal="" style={d('.12s')}>Ten Nigerians abroad recognised at the third NIDA gala in Paris, from engineering and academia to football, fashion, journalism, music and diplomacy.</p>
         </div>
         <div className="feature" data-feature="">
@@ -284,7 +283,7 @@ function Featured() {
                 </button>
               ))}
             </div>
-            <p style={{ marginTop: '2.5rem' }} data-reveal=""><a className="btn" href={page('awardees')}>Meet the Awardees <Arrow className="arrow" /></a></p>
+            <p className="feature__more" data-reveal=""><a className="btn" href={page('awardees')}>Meet the Awardees <Arrow className="arrow" /></a></p>
           </div>
         </div>
       </div>
@@ -317,7 +316,8 @@ function Editions() {
                 <div className="edition-meta">
                   <dl>
                     <div><dt>Date</dt><dd>{e.date}</dd></div>
-                    <div><dt>Venue</dt><dd>{e.venue}<br /><span style={{ color: 'var(--color-ink-soft)', fontWeight: 400 }}>{e.city}</span></dd></div>
+                    <div><dt>Venue</dt><dd>{e.venue}<br /><span className="edition-meta__sub">{e.city}</span></dd></div>
+                    {e.photos.length ? null : e.theme ? <div><dt>Theme</dt><dd>{e.theme}</dd></div> : null}
                   </dl>
                   {e.stat ? <p className="edition-stat"><b>{e.stat.value}</b><span>{e.stat.label}</span></p> : null}
                   {e.pending ? <p className="edition-pending">{e.pending}</p> : null}
@@ -336,10 +336,7 @@ function Editions() {
                   </div>
                 ) : (
                   <div className="edition-photos edition-photos--theme">
-                    <div>
-                      <p className="eyebrow eyebrow--plain gold" style={{ justifyContent: 'center' }}>2026 theme</p>
-                      <p className="edition-theme" style={{ marginTop: '1rem' }}>{e.theme}</p>
-                    </div>
+                    <p className="edition-theme">“{e.theme}”</p>
                   </div>
                 )}
               </div>

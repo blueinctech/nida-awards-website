@@ -26,9 +26,9 @@ body { width: 1200px; height: 630px; overflow: hidden; font-family: Montserrat, 
 .gold-rule { position: absolute; left: 0; right: 0; bottom: 0; height: 8px; background: linear-gradient(135deg, #F5C566, #DDBA5C 50%, #C6982F); }
 .copy { position: absolute; left: 72px; top: 64px; bottom: 70px; width: 640px; display: flex; flex-direction: column; }
 .logo { width: 210px; }
-.eyebrow { margin-top: 48px; font-size: 18px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: #F5C566; }
-.name { margin-top: 18px; font-family: 'NIDA Display', Montserrat, sans-serif; font-weight: 700; font-size: var(--fs); line-height: 1.06; letter-spacing: -.025em; }
+.name { margin-top: 56px; font-family: 'NIDA Display', Montserrat, sans-serif; font-weight: 700; font-size: var(--fs); line-height: 1.06; letter-spacing: -.025em; }
 .award { margin-top: 22px; font-size: 26px; font-weight: 600; line-height: 1.3; color: #F5C566; max-width: 600px; }
+.edition { margin-top: 10px; font-size: 20px; font-weight: 500; color: rgba(255,255,255,.78); }
 .foot { margin-top: auto; font-size: 17px; letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.72); }
 .foot b { color: #fff; font-weight: 600; }
 .portrait { position: absolute; right: 80px; top: 58px; width: 372px; height: 472px; border-radius: 999px 999px 4px 4px; overflow: hidden;
@@ -39,9 +39,9 @@ body { width: 1200px; height: 630px; overflow: hidden; font-family: Montserrat, 
 <div class="ring r1"></div><div class="ring r2"></div>
 <div class="copy">
   <img class="logo" src="${asset('img/brand/nida-logo-white.png')}" alt="">
-  <p class="eyebrow">NIDA ${a.year} · Honouree</p>
   <h1 class="name">${esc(a.name)}</h1>
   <p class="award">${esc(a.award)}</p>
+  <p class="edition">NIDA ${a.year} honouree</p>
   <p class="foot"><b>nida-awards.org</b> · Nigerians in Diaspora Awards</p>
 </div>
 <div class="portrait"><img src="${asset('img/awardees/' + a.slug + '-594.webp')}" alt=""></div>

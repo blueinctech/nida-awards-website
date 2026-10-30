@@ -44,8 +44,8 @@ export default function AwardsPage() {
           <h2 className="h2" id="other-t" data-reveal="">{site.otherHonours.name}</h2>
           <div>
             <p className="lead" data-reveal="">{site.otherHonours.text}</p>
-            <ul className="honourees-chips" role="list" style={{ marginTop: '1.5rem' }} data-reveal="">
-              {other.map((a) => <li key={a.slug}><a href={awardeeUrl(a.slug)}>{a.award} · {a.year}</a></li>)}
+            <ul className="honourees-chips honourees-chips--detail" role="list" data-reveal="">
+              {other.map((a) => <li key={a.slug}><a href={awardeeUrl(a.slug)}><b>{a.name}</b><span>{a.award} · {a.year}</span></a></li>)}
             </ul>
           </div>
         </div>
@@ -58,7 +58,7 @@ export default function AwardsPage() {
             <p className="lead muted" data-reveal="" style={d('.1s')}>A panel of judges assesses every nomination against four criteria: impact &amp; distinction, leadership, innovation and character.</p>
           </div>
           <Steps />
-          <p style={{ marginTop: '3rem' }} data-reveal=""><a className="btn" href={page('nomination')}>Nomination details <Arrow className="arrow" /></a></p>
+          <p className="section-cta" data-reveal=""><a className="btn" href={page('nomination')}>Nomination details <Arrow className="arrow" /></a></p>
         </div>
       </section>
     </SiteShell>

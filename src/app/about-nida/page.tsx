@@ -27,10 +27,8 @@ export default function AboutPage() {
             <figure data-reveal="mask" style={d('.2s')}><PhotoImg id="2025-55" sizes="(max-width: 900px) 45vw, 22vw" /></figure>
           </div>
           <div className="intro__body">
-            <div className="prose" data-reveal="">
-              <p>{site.about[0]}</p>
-              <p>{site.about[1]}</p>
-            </div>
+            <p className="intro__text" data-reveal="">{site.about[0]}</p>
+            <p data-reveal="" style={d('.1s')}><a className="link-arrow green" href={page('awards')}>The award categories <Arrow /></a></p>
           </div>
         </div>
       </section>
@@ -38,8 +36,8 @@ export default function AboutPage() {
       <section className="section section--forest">
         <div className="container">
           <div className="mission__pair">
-            <div className="mission__item" data-reveal=""><p className="mission__label">Mission</p><p>{site.mission}</p></div>
-            <div className="mission__item" data-reveal="" style={d('.12s')}><p className="mission__label">Vision</p><p>{site.vision}</p></div>
+            <div className="mission__item" data-reveal=""><h2 className="mission__title">Our mission</h2><p>{site.mission}</p></div>
+            <div className="mission__item" data-reveal="" style={d('.12s')}><h2 className="mission__title">Our vision</h2><p>{site.vision}</p></div>
           </div>
         </div>
       </section>

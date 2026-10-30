@@ -9,12 +9,11 @@ export default function Organizer({ variant }: { variant: 'home' | 'about' }) {
     <section className="section section--light on-light" aria-labelledby="org-title" id={home ? undefined : 'organiser'}>
       <div className="container organizer">
         <div className="organizer__mark" data-reveal="">
-          <p className="section-index">The organiser</p>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={asset('img/brand/fon-logo.png')} width={301} height={304} alt="Friends of Nigeria (FON) Europe logo" loading="lazy" />
         </div>
         <div>
-          <h2 className="h2" id="org-title" data-reveal="">{o.name}</h2>
+          <h2 className="h2" id="org-title" data-reveal="">Organised by {o.name}</h2>
           <div className="prose" style={{ marginTop: '1.5rem' }} data-reveal="">
             <p>{o.summary}</p>
             <p>{o.network}</p>
@@ -27,7 +26,7 @@ export default function Organizer({ variant }: { variant: 'home' | 'about' }) {
           </dl>
           {home ? (
             <div className="sponsors" data-reveal="">
-              <h3 className="sponsors__title">Sponsors</h3>
+              <h3 className="sponsors__title">Our sponsors</h3>
               {site.sponsors.map((s) => (
                 // eslint-disable-next-line @next/next/no-img-element
                 <span className="sponsors__logo" key={s.name}><img src={asset('img/' + s.logo)} alt={s.name} loading="lazy" width={s.w} height={s.h} /></span>

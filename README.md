@@ -95,7 +95,9 @@ Two families, as on nida-awards.org, both self-hosted in `public/assets/fonts/`:
 - **NIDA Display** for headings and key figures: TeX Gyre Adventor (GUST Font License, `ADVENTOR-GUST-FONT-LICENSE.txt`), the open-licence revival of ITC Avant Garde Gothic. nida-awards.org sets every heading in ITC Avant Garde Gothic Medium, so this keeps NIDA's heading voice without a commercial licence. The files are subsets (Latin, Latin Extended, Yoruba and Vietnamese accents), so every honouree name, including Péjú Oshin, renders in it.
 - **Montserrat** (SIL Open Font License, `MONTSERRAT-OFL.txt`) for paragraphs, labels, buttons, navigation and forms.
 
-All sizes, weights, line heights and letter spacing are tokens at the top of `src/styles/main.css` (`--fs-*`, `--fw-*`, `--lh-*`, `--ls-*`, `--para-gap`, `--measure`). Use the tokens or the `.display`, `.h1` to `.h4`, `.lead`, `.statement` and `.eyebrow` classes rather than new values, so headings at the same level look the same on every page.
+All sizes, weights, line heights and letter spacing are tokens at the top of `src/styles/main.css` (`--fs-*`, `--fw-*`, `--lh-*`, `--ls-*`, `--para-gap`, `--measure`). Use the tokens or the `.display`, `.h1` to `.h4`, `.lead` and `.statement` classes rather than new values, so headings at the same level look the same on every page.
+
+The site has no eyebrows: no small uppercase labels above headings. A section starts with its heading; if a label carries information (an edition, a year, "Mission"), make it part of the heading or put it below the heading in sentence case. Award titles on cards and lists are sentence case too. Uppercase is kept only for buttons, navigation, footer column titles and data labels (`dt`).
 
 | Role | Font, weight | Size (360px to 1440px) | Line height | Tracking |
 | --- | --- | --- | --- | --- |
@@ -111,7 +113,9 @@ All sizes, weights, line heights and letter spacing are tokens at the top of `sr
 | Biography | Montserrat 400 | 17 to 18px (first paragraph 18 to 20px, 500) | 1.8 | 0 |
 | Body | Montserrat 400 | 16px (15px for supporting text) | 1.7 | 0 |
 | Small, caption | Montserrat 400 | 14px, 13px | 1.55 | 0 |
-| Eyebrow, label | Montserrat 600, uppercase | 12px (11px on cards) | 1.5 | 0.2em (0.12em) |
+| Award title on cards and lists | Montserrat 500–600 | 13–14px | 1.55 | 0 |
+| Data label (`dt`), footer column title | Montserrat 600, uppercase | 12px | 1.5 | 0.2em |
+| Breadcrumb | Montserrat 500 | 13px | 1.5 | 0 |
 | Button | Montserrat 600, uppercase | 13px (12px in the header) | 1.2 | 0.14em |
 | Navigation | Montserrat 600, uppercase | 12.5px | | 0.16em |
 
