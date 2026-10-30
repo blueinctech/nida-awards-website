@@ -44,7 +44,7 @@ export default function ContactPage() {
             <div className="contact-card" data-reveal="" style={d('.16s')}>
               <h2>Follow NIDA</h2>
               <div className="social" style={{ '--x': 0 } as React.CSSProperties}>
-                <SocialLinks style={{ color: 'var(--color-forest)', borderColor: 'rgba(4,23,26,.2)' }} />
+                <SocialLinks style={{ color: 'var(--color-forest)', borderColor: 'rgb(var(--rgb-ink) / .2)' }} />
               </div>
             </div>
           </div>

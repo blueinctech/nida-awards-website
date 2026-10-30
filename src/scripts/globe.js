@@ -15,7 +15,7 @@
   var reduce = reduceMQ.matches;
 
   // Brand colours (see AUDIT.md) as RGB
-  var GREEN = '1,145,60', GOLD = '245,197,102', PINE = '24,79,34', FOREST = '8,59,30', INK = '4,23,26';
+  var GREEN = '1,145,60', GOLD = '245,197,102', PINE = '24,79,34', FOREST = '8,59,30', INK = '3,24,12';
   var NIGERIA = { lon: 8.1, lat: 9.6 };
   var VIEW_LAT = 24 * Math.PI / 180;   // tilt so Europe and Nigeria are both on the visible face
   var VIEW_LON = 6;                    // centre longitude of the sway, degrees

@@ -15,13 +15,13 @@ Taken from the site's own Elementor global colour kit (`post-7.css`), the per-pa
 | `--color-forest` | `#083B1E` | Header background and borders |
 | `--color-pine` | `#184F22` | Section background (18 uses) |
 | `--color-black` | `#000000` | Awardees section background |
-| `--color-ink` | `#04171A` | Theme dark text colour |
+| `--color-ink` | `#03180C` | Dark text and darkest surfaces: `--color-forest` at 40 % brightness. Replaces `#04171A`, the Oment theme's default black (`--thm-black`), which reads teal-blue |
 | `--color-white` | `#FFFFFF` | Text on dark, light backgrounds |
 | `--color-ivory` | `#F8F7F3` | Light section background |
 | `--color-mist` | `#ECECEC` | Light grey surfaces |
 | `--color-text-muted` | `#7A7A7A` | Elementor global **text** |
 
-Colours seen on the live site that were **not** carried over, because they are leftovers from the purchased "Oment" event theme rather than NIDA branding: `#FF3639` (theme red, shows on the mobile menu icon and the footer credit link) and `#302B52` (theme purple, off-canvas panel).
+Colours seen on the live site that were **not** carried over, because they are leftovers from the purchased "Oment" event theme rather than NIDA branding: `#04171A` (theme black, a dark teal), `#5D78FF` (Elementor default blue), `#FF3639` (theme red, shows on the mobile menu icon and the footer credit link) and `#302B52` (theme purple, off-canvas panel).
 
 Accessibility note: `#01913C` and the golds do not meet WCAG AA contrast for small text on white. The new site uses them for large text, rules, markers and on dark backgrounds, and uses `#083B1E` for small text on light backgrounds. The palette itself is unchanged.
 
@@ -151,3 +151,13 @@ Design read: a prestige awards and gala site for the Nigerian diaspora and its p
 - 11 interaction checks pass, no console errors.
 - No horizontal overflow at 1440, 820, 390 and 360 on 9 key pages.
 - Fold: laptop 1366x657 CTA bottom 534 px; phones 390x844 and 360x740 CTAs fully visible with 4 faces.
+
+## 12. Colour correction (30 October 2026)
+
+Re-checked against nida-awards.org (Elementor kit `post-7.css`: primary `#01913C`, secondary `#F5C566`, accent `#DDBA5C`, text `#7A7A7A`; page styles: `#C6982F` ×119, `#184F22` ×18, `#083B1E` ×12, `#000000` ×22, `#F8F7F3`, `#ECECEC`).
+
+- **Globe section ("Celebrating excellence") looked blue.** Its background ran from `#04171A` (the Oment theme black, a teal) to black. Now black, like the original site's honourees band, with a soft pine (`#184F22`) light behind the globe. The globe canvas and the CSS fallback globe use the corrected ink.
+- **Green tint on globe portraits removed.** Faces outside the spotlight are plain black and white instead of green-washed; the spotlighted honouree stays in full colour with the gold ring.
+- **Ink colour across the site.** `--color-ink` (body text, form arrows, outline buttons, the honour-wall toggle and 35 border/shadow tints) changed from teal `#04171A` to `#03180C`, a shade of the brand forest green.
+- **Shared tokens.** Added channel tokens `--rgb-ink`, `--rgb-forest`, `--rgb-pine`, `--rgb-primary`, `--rgb-gold`, `--rgb-gold-deep`; every translucent brand colour in `main.css` and the contact page now uses them (`rgb(var(--rgb-gold) / .16)`), and the hard-coded gallery placeholder `#0b1a10` uses `--color-ink`. Remaining literals are white/black transparencies and the form error red.
+- **Checked rendered:** computed colours of every element on 10 pages show no blue or teal hue; full-page screenshots at 1440, 820 and 390 px; `next build` passes.
