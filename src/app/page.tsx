@@ -2,7 +2,8 @@ import SiteShell from '@/components/SiteShell';
 import NewsletterForm from '@/components/NewsletterForm';
 import Organizer from '@/components/Organizer';
 import { GlobeScript } from '@/components/ClientScripts';
-import { PhotoImg, PortraitImg, photoLargest } from '@/components/images';
+import { PhotoImg, PortraitImg, WallImg, photoLargest } from '@/components/images';
+import heroWall from '@/data/hero-wall.json';
 import { Arrow, Info, Pause } from '@/components/icons';
 import { asset, awardeeUrl, awardees, byYear, bySlug, d, hasAccents, page, photoById, shortAward, site, type Awardee } from '@/lib/data';
 import { pageMetadata } from '@/lib/meta';
@@ -13,21 +14,36 @@ export const metadata = pageMetadata({
   description: site.description + ' Organised in Paris by Friends of Nigeria (FON) Europe since 2023.',
 });
 
-// ---- Hero: wall of honour built from verified awardee portraits ----
+// ---- Hero: wall of honour. Award-night photos from nida-awards.org mixed with verified honouree portraits (src/data/hero-wall.json) ----
+type WallTile =
+  | { type: 'awardee'; slug: string }
+  | { type: 'moment'; id: string; src: string; crop: number[]; year: number; title?: string; slug?: string; alt: string };
+const tileKey = (t: WallTile) => (t.type === 'awardee' ? t.slug : t.id);
+const wallColumns = (heroWall as unknown as { columns: WallTile[][] }).columns;
+
 function Hero() {
-  const people = awardees.filter((a) => a.slug !== 'propel'); // Propel is a company logo, not a portrait
-  const cols: Awardee[][] = [[], [], []];
-  people.forEach((a, i) => cols[i % 3].push(a));
-  const Tile = ({ a, hidden, eager }: { a: Awardee; hidden: boolean; eager: boolean }) => (
-    <a
-      className="portrait-tile"
-      href={awardeeUrl(a.slug)}
-      {...(hidden ? { tabIndex: -1, 'aria-hidden': 'true' as const } : { 'aria-label': `${a.name}, ${a.award}, NIDA ${a.year}` })}
-    >
-      <PortraitImg slug={a.slug} sizes="(max-width: 980px) 120px, 13vw" eager={eager} />
-      <span className="portrait-tile__cap" aria-hidden="true"><b>{a.name}</b><span>{shortAward(a)}</span><i>NIDA {a.year}</i></span>
-    </a>
-  );
+  const Tile = ({ t, hidden, eager }: { t: WallTile; hidden: boolean; eager: boolean }) => {
+    const sizes = '(max-width: 980px) 160px, 13vw';
+    const a = t.slug ? bySlug[t.slug] : undefined;
+    // A moment credited to an honouree links to their profile; other moments link to the gallery
+    const href = a ? awardeeUrl(a.slug) : page('gallery');
+    const label = t.type === 'awardee' ? `${a!.name}, ${a!.award}, NIDA ${a!.year}` : `${t.alt}, NIDA ${t.year}${a ? '' : ', see the gallery'}`;
+    const year = t.type === 'awardee' ? a!.year : t.year;
+    return (
+      <a
+        className={t.type === 'moment' ? 'portrait-tile portrait-tile--moment' : 'portrait-tile'}
+        href={href}
+        {...(hidden ? { tabIndex: -1, 'aria-hidden': 'true' as const } : { 'aria-label': label })}
+      >
+        {t.type === 'awardee' ? <PortraitImg slug={t.slug} sizes={sizes} eager={eager} /> : <WallImg id={t.id} sizes={sizes} eager={eager} />}
+        <span className="portrait-tile__cap" aria-hidden="true">
+          <b>{a ? a.name : t.type === 'moment' ? t.title : ''}</b>
+          <span>{a ? shortAward(a) : 'Gala Awards Night, Paris'}</span>
+          <i>NIDA {year}</i>
+        </span>
+      </a>
+    );
+  };
   return (
     <section className="hero" data-hero="" aria-labelledby="hero-title">
       {/* Background only: a NIDA 2024 trophy table photo (nida-awards.org), cropped above the watermarks, under brand-colour overlays */}
@@ -58,13 +74,13 @@ function Hero() {
           </div>
         </div>
         <div className="hero__visual" data-hero-fade="" style={d('.15s')}>
-          <div className="honour-wall" data-wall="" role="group" aria-label="NIDA honourees, 2023 to 2025">
-            {cols.map((col, c) => (
+          <div className="honour-wall" data-wall="" role="group" aria-label="NIDA honourees and award nights, 2023 to 2025">
+            {wallColumns.map((col, c) => (
               <div className="honour-wall__col" key={c}>
                 {/* Each column is listed twice so the scroll animation loops seamlessly */}
                 <div className="honour-wall__track">
-                  {col.map((a, i) => <Tile key={a.slug} a={a} hidden={false} eager={i < 3} />)}
-                  {col.map((a) => <Tile key={a.slug + '-copy'} a={a} hidden eager={false} />)}
+                  {col.map((t, i) => <Tile key={tileKey(t)} t={t} hidden={false} eager={i < 3} />)}
+                  {col.map((t) => <Tile key={tileKey(t) + '-copy'} t={t} hidden eager={false} />)}
                 </div>
               </div>
             ))}

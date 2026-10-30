@@ -45,6 +45,8 @@ Old links of the form `/awardees/#<slug>` redirect to the new page.
 
 ### Home page globe
 
+The hero's moving wall mixes award-night photos from nida-awards.org (honourees holding NIDA trophies, presentations, acceptance speeches, 2023 to 2025) with verified honouree portraits. The tiles, their order per column and their captions live in `src/data/hero-wall.json`; after changing a photo or its crop, run `python3 tools/make_hero_wall.py` to rebuild the 3:4 crops in `public/assets/img/hero/wall/`. Only name a person on a photo tile when the photo is already credited to them (it then links to their profile; other photo tiles link to the gallery). Keep about nine tiles per column so the scroll speed stays the same.
+
 The section under the hero shows ten honourees around a dotted globe centred on Nigeria (`src/scripts/globe.js`, drawn on a canvas with the brand colours only). To change who appears, edit the `ORBIT` list in `src/app/page.tsx` (slug, x, y and size as percentages of the square stage; `'wide'` hides that portrait on phones), add a crop for any new person in `tools/make_faces.py` and run `python3 tools/make_faces.py`. The map data in `public/assets/js/globe-data.js` comes from Natural Earth (public domain) and is rebuilt with `python3 tools/make_globe.py raw/geo`. Without JavaScript, or with reduced motion turned on, the section shows a still globe and every portrait link still works.
 
 ### "Save the date" mailing list

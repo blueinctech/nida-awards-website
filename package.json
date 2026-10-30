@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "npx serve@14 out -l 8080",
-    "images": "python3 tools/optimize_images.py && python3 tools/make_og.py",
+    "images": "python3 tools/optimize_images.py && python3 tools/make_hero_wall.py && python3 tools/make_og.py",
     "share-images": "node tools/make_share.js"
   },
   "dependencies": {

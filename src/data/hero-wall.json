@@ -1,0 +1,281 @@
+{
+ "_note": "Home hero wall. Three columns, top to bottom. 'moment' tiles are award-night photos from nida-awards.org, cropped to 3:4 by tools/make_hero_wall.py (crop = centre x, centre y, height, as fractions of the photo). 'awardee' tiles reuse the verified honouree portraits. Only name a person in a moment when the photo is already credited to them.",
+ "columns": [
+  [
+   {
+    "type": "moment",
+    "id": "2025-trophy-trio",
+    "src": "2026_03_54975770520_5451514bd6_z.jpg",
+    "crop": [
+     0.47,
+     0.5,
+     1
+    ],
+    "year": 2025,
+    "title": "Trophy moment",
+    "alt": "An honouree in black tie holding his NIDA trophy, with two guests, in front of the NIDA backdrop"
+   },
+   {
+    "type": "awardee",
+    "slug": "kachi-nwanna"
+   },
+   {
+    "type": "moment",
+    "id": "2024-two-women-trophy",
+    "src": "2024_12_54180921243_5538247bca_z.jpg",
+    "crop": [
+     0.45,
+     0.5,
+     1
+    ],
+    "year": 2024,
+    "title": "Award presentation",
+    "alt": "Two women holding a NIDA trophy in front of the gala backdrop"
+   },
+   {
+    "type": "moment",
+    "id": "2025-rasheedat-lectern",
+    "src": "2026_03_54974548982_637e040012_z.jpg",
+    "crop": [
+     0.55,
+     0.5,
+     1
+    ],
+    "year": 2025,
+    "slug": "rasheedat-ajibade",
+    "alt": "Rasheedat Ajibade speaking at the lectern with her NIDA trophy"
+   },
+   {
+    "type": "moment",
+    "id": "2024-handover",
+    "src": "2024_12_54181090545_072080ce09_c.jpg",
+    "crop": [
+     0.5,
+     0.5,
+     1
+    ],
+    "year": 2024,
+    "title": "Receiving the award",
+    "alt": "An honouree receiving the NIDA trophy"
+   },
+   {
+    "type": "awardee",
+    "slug": "morin-oluwole"
+   },
+   {
+    "type": "moment",
+    "id": "2023-stage-award",
+    "src": "2024_10_Copy-of-NIDA67.jpg",
+    "crop": [
+     0.5,
+     0.52,
+     0.82
+    ],
+    "year": 2023,
+    "title": "On stage",
+    "alt": "A trophy being presented to an honouree on stage"
+   },
+   {
+    "type": "moment",
+    "id": "2025-presentation",
+    "src": "2026_03_54974569602_ce90345ef0_z.jpg",
+    "crop": [
+     0.5,
+     0.5,
+     1
+    ],
+    "year": 2025,
+    "title": "Award presentation",
+    "alt": "An award presentation at the NIDA 2025 lectern"
+   },
+   {
+    "type": "awardee",
+    "slug": "cynthia-asije"
+   }
+  ],
+  [
+   {
+    "type": "moment",
+    "id": "2025-two-women-trophy",
+    "src": "2026_03_54975736834_2af1fd0afa_z.jpg",
+    "crop": [
+     0.6,
+     0.5,
+     1
+    ],
+    "year": 2025,
+    "title": "Celebrating the win",
+    "alt": "Two women with a NIDA trophy at the 2025 backdrop"
+   },
+   {
+    "type": "awardee",
+    "slug": "akinloye-bamigboye"
+   },
+   {
+    "type": "moment",
+    "id": "2024-black-tie-trophy",
+    "src": "2024_12_54179764157_155eba4e58_b.jpg",
+    "crop": [
+     0.5,
+     0.5,
+     1
+    ],
+    "year": 2024,
+    "title": "Trophy moment",
+    "alt": "Three men in black tie with a NIDA trophy"
+   },
+   {
+    "type": "moment",
+    "id": "2025-lectern-trophy",
+    "src": "2026_03_54974489417_3dcfb1be1b_z.jpg",
+    "crop": [
+     0.5,
+     0.5,
+     1
+    ],
+    "year": 2025,
+    "title": "Acceptance speech",
+    "alt": "An honouree holding his NIDA trophy at the lectern"
+   },
+   {
+    "type": "awardee",
+    "slug": "ozak-ejiofor"
+   },
+   {
+    "type": "moment",
+    "id": "2024-trophy-pair",
+    "src": "2024_12_54181089630_f8fd089ed1_z.jpg",
+    "crop": [
+     0.45,
+     0.5,
+     1
+    ],
+    "year": 2024,
+    "title": "Award presentation",
+    "alt": "Two women holding a NIDA trophy"
+   },
+   {
+    "type": "moment",
+    "id": "2025-honourees-trophies",
+    "src": "2026_03_54974590162_5567030e7f_z.jpg",
+    "crop": [
+     0.5,
+     0.5,
+     1
+    ],
+    "year": 2025,
+    "title": "Honourees",
+    "alt": "Honourees with their trophies at NIDA 2025"
+   },
+   {
+    "type": "awardee",
+    "slug": "juliana-olayinka"
+   },
+   {
+    "type": "moment",
+    "id": "2024-trophy-handshake",
+    "src": "2024_12_54179767412_0439a60cba_z.jpg",
+    "crop": [
+     0.45,
+     0.5,
+     1
+    ],
+    "year": 2024,
+    "title": "Receiving the award",
+    "alt": "An honouree receiving a NIDA trophy at the gala"
+   }
+  ],
+  [
+   {
+    "type": "moment",
+    "id": "2024-gele-trophy",
+    "src": "2024_12_54180649056_c7b19f5b1f_z.jpg",
+    "crop": [
+     0.55,
+     0.5,
+     1
+    ],
+    "year": 2024,
+    "title": "Trophy moment",
+    "alt": "An honouree in a gele holding her NIDA trophy, with guests in black tie"
+   },
+   {
+    "type": "awardee",
+    "slug": "jolaade-alao"
+   },
+   {
+    "type": "moment",
+    "id": "2025-acceptance",
+    "src": "2026_03_54975442506_43dc1c9c4c_z.jpg",
+    "crop": [
+     0.5,
+     0.5,
+     1
+    ],
+    "year": 2025,
+    "title": "At the lectern",
+    "alt": "An honouree speaking at the lectern"
+   },
+   {
+    "type": "moment",
+    "id": "2024-presentation-handshake",
+    "src": "2024_12_54179767277_fb8c96749c_z.jpg",
+    "crop": [
+     0.45,
+     0.5,
+     1
+    ],
+    "year": 2024,
+    "title": "Award presentation",
+    "alt": "An honouree and a guest shaking hands over a NIDA trophy"
+   },
+   {
+    "type": "awardee",
+    "slug": "tolulope-ayeni"
+   },
+   {
+    "type": "moment",
+    "id": "2023-award-handshake",
+    "src": "2024_10_Copy-of-NIDA84-copy.jpg",
+    "crop": [
+     0.5,
+     0.52,
+     0.86
+    ],
+    "year": 2023,
+    "title": "Award handover",
+    "alt": "Two men exchanging an award on stage"
+   },
+   {
+    "type": "moment",
+    "id": "2025-speech",
+    "src": "2026_03_54974486387_0e616c6002_z.jpg",
+    "crop": [
+     0.5,
+     0.5,
+     1
+    ],
+    "year": 2025,
+    "title": "At the lectern",
+    "alt": "A speaker at the NIDA 2025 lectern"
+   },
+   {
+    "type": "awardee",
+    "slug": "kayode-laro"
+   },
+   {
+    "type": "moment",
+    "id": "2024-honouree-trophy",
+    "src": "2024_12_54180651021_1f47539b76_z.jpg",
+    "crop": [
+     0.45,
+     0.5,
+     1
+    ],
+    "year": 2024,
+    "title": "Celebrating the win",
+    "alt": "An honouree and a guest with a NIDA trophy"
+   }
+  ]
+ ]
+}
