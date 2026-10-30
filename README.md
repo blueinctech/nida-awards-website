@@ -43,10 +43,6 @@ npm run build
 
 Old links of the form `/awardees/#<slug>` redirect to the new page.
 
-### Home page hero
-
-The hero shows a genuine photograph from the inaugural ceremony (Paris, 2023): an award being presented on stage, originally `Copy-of-NIDA67.jpg` on the old site (kept in `raw/2024_10_Copy-of-NIDA67.jpg`). The cropped WebP files are in `public/assets/img/hero/award-presentation-2023-{640,1080,1600}.webp`. To use a different photo, save new crops under the same names (or change `HERO_PHOTO` in `src/app/page.tsx`) and update the alt text and caption there.
-
 ### Home page globe
 
 The section under the hero shows ten honourees around a dotted globe centred on Nigeria (`src/scripts/globe.js`, drawn on a canvas with the brand colours only). To change who appears, edit the `ORBIT` list in `src/app/page.tsx` (slug, x, y and size as percentages of the square stage; `'wide'` hides that portrait on phones), add a crop for any new person in `tools/make_faces.py` and run `python3 tools/make_faces.py`. The map data in `public/assets/js/globe-data.js` comes from Natural Earth (public domain) and is rebuilt with `python3 tools/make_globe.py raw/geo`. Without JavaScript, or with reduced motion turned on, the section shows a still globe and every portrait link still works.

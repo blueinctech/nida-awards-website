@@ -13,45 +13,49 @@ export const metadata = pageMetadata({
   description: site.description + ' Organised in Paris by Friends of Nigeria (FON) Europe since 2023.',
 });
 
-// ---- Hero: a genuine NIDA award presentation, with the 2026 theme beside it ----
-// Photo: an award being presented on stage at the inaugural ceremony, L’Hôtel de l’Industrie,
-// Paris, 2023 (originally nida-awards.org/wp-content/uploads/2024/10/Copy-of-NIDA67.jpg).
-// Crops live in public/assets/img/hero/.
-const HERO_PHOTO = 'img/hero/award-presentation-2023';
-
+// ---- Hero: wall of honour built from verified awardee portraits ----
 function Hero() {
-  const src = (w: number) => asset(`${HERO_PHOTO}-${w}.webp`);
+  const people = awardees.filter((a) => a.slug !== 'propel'); // Propel is a company logo, not a portrait
+  const cols: Awardee[][] = [[], [], []];
+  people.forEach((a, i) => cols[i % 3].push(a));
+  const Tile = ({ a, hidden, eager }: { a: Awardee; hidden: boolean; eager: boolean }) => (
+    <a
+      className="portrait-tile"
+      href={awardeeUrl(a.slug)}
+      {...(hidden ? { tabIndex: -1, 'aria-hidden': 'true' as const } : { 'aria-label': `${a.name}, ${a.award}, NIDA ${a.year}` })}
+    >
+      <PortraitImg slug={a.slug} sizes="(max-width: 980px) 120px, 13vw" eager={eager} />
+      <span className="portrait-tile__cap" aria-hidden="true"><b>{a.name}</b><span>{shortAward(a)}</span><i>NIDA {a.year}</i></span>
+    </a>
+  );
   return (
     <section className="hero" data-hero="" aria-labelledby="hero-title">
       <div className="container hero__grid">
-        <figure className="hero__media">
-          <span className="hero__frame" aria-hidden="true"></span>
-          <div className="hero__photo">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={src(1080)}
-              srcSet={`${src(640)} 640w, ${src(1080)} 1080w, ${src(1600)} 1600w`}
-              sizes="(max-width: 980px) 100vw, 46vw"
-              width={1080}
-              height={1026}
-              alt="A NIDA trophy being presented to an honouree on stage at the inaugural ceremony in Paris"
-              fetchPriority="high"
-              decoding="async"
-            />
-          </div>
-          <figcaption className="hero__caption">Inaugural ceremony, Paris 2023</figcaption>
-        </figure>
         <div className="hero__copy">
           <p className="eyebrow hero__eyebrow" data-hero-fade="" style={d('.1s')}><span>Nigerians in Diaspora Awards<span className="hero__eyebrow-extra"> · 2026 theme</span></span></p>
           <h1 className="hero__title" id="hero-title">
-            <span className="line"><span style={d('.15s')}>From Nigerian roots</span></span>{' '}
+            <span className="line"><span style={d('.15s')}>From Nigerian roots</span></span>
             <span className="line"><span style={d('.22s')}>to <em>global heights.</em></span></span>
           </h1>
           <p className="hero__lead" data-hero-fade="" style={d('.3s')}>NIDA celebrates the outstanding achievements of Nigerians living abroad and promotes a positive narrative about their contributions to the world.</p>
           <div className="hero__actions" data-hero-fade="" style={d('.4s')}>
             <a className="btn" href={page('awardees')}>Meet the awardees <Arrow className="arrow" /></a>
-            <a className="btn btn--line-green" href="#save-the-date">Save the date</a>
+            <a className="btn btn--ghost" href="#save-the-date">Save the date</a>
           </div>
+        </div>
+        <div className="hero__visual" data-hero-fade="" style={d('.15s')}>
+          <div className="honour-wall" data-wall="" role="group" aria-label="NIDA honourees, 2023 to 2025">
+            {cols.map((col, c) => (
+              <div className="honour-wall__col" key={c}>
+                {/* Each column is listed twice so the scroll animation loops seamlessly */}
+                <div className="honour-wall__track">
+                  {col.map((a, i) => <Tile key={a.slug} a={a} hidden={false} eager={i < 3} />)}
+                  {col.map((a) => <Tile key={a.slug + '-copy'} a={a} hidden eager={false} />)}
+                </div>
+              </div>
+            ))}
+          </div>
+          <button className="wall-toggle" type="button" data-wall-toggle="" aria-pressed="false"><span data-wall-icon=""><Pause /></span><span data-wall-label="">Pause motion</span></button>
         </div>
       </div>
     </section>
