@@ -48,27 +48,6 @@
     revealEls.forEach(function (el) { el.classList.add('is-in'); });
   }
 
-  /* ---------- Wall of honour: pause control ---------- */
-  var wall = $('[data-wall]');
-  var wallBtn = $('[data-wall-toggle]');
-  if (wall && wallBtn) {
-    var pauseIcon = '<svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1.5" width="2.6" height="9" fill="currentColor"/><rect x="7.4" y="1.5" width="2.6" height="9" fill="currentColor"/></svg>';
-    var playIcon = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 1.5v9l8-4.5z" fill="currentColor"/></svg>';
-    wallBtn.addEventListener('click', function () {
-      var paused = wall.classList.toggle('is-paused');
-      wallBtn.setAttribute('aria-pressed', String(paused));
-      $('[data-wall-label]', wallBtn).textContent = paused ? 'Play motion' : 'Pause motion';
-      $('[data-wall-icon]', wallBtn).innerHTML = paused ? playIcon : pauseIcon;
-    });
-    // Save battery: stop animating while the hero is off screen
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(function (en) {
-        wall.style.setProperty('--play', en[0].isIntersecting ? 'running' : 'paused');
-        $$('.honour-wall__track', wall).forEach(function (t) { if (!wall.classList.contains('is-paused')) t.style.animationPlayState = en[0].isIntersecting ? '' : 'paused'; });
-      }).observe(wall);
-    }
-  }
-
   /* ---------- Tabs helper (roving tabindex + arrow keys) ---------- */
   function setupTabs(tabs, onSelect, vertical) {
     tabs.forEach(function (tab, i) {
