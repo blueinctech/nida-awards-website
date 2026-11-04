@@ -1,7 +1,9 @@
-import { d, site } from '@/lib/data';
+import { d } from '@/lib/data';
+import { getSite } from '@/lib/server/content';
 
 // The three-step awards process (awards and nomination pages)
-export default function Steps() {
+export default async function Steps() {
+  const { site } = await getSite();
   return (
     <ol className="steps" role="list">
       {site.process.map((s, i) => (

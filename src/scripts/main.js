@@ -284,6 +284,44 @@
   }
 
   /* ---------- Forms ---------- */
+  // Large photos are resized in the browser (longest side 2400px, JPEG) so a nomination with
+  // pictures and documents stays under the 4 MB upload limit.
+  function shrinkImage(file) {
+    if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size < 1200000 || !window.createImageBitmap) return Promise.resolve(file);
+    return createImageBitmap(file).then(function (bmp) {
+      var scale = Math.min(1, 2400 / Math.max(bmp.width, bmp.height));
+      var c = doc.createElement('canvas');
+      c.width = Math.round(bmp.width * scale);
+      c.height = Math.round(bmp.height * scale);
+      c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+      return new Promise(function (res) {
+        c.toBlob(function (b) {
+          res(b && b.size < file.size ? new File([b], file.name.replace(/\.\w+$/, '') + '.jpg', { type: 'image/jpeg' }) : file);
+        }, 'image/jpeg', 0.85);
+      });
+    }).catch(function () { return file; });
+  }
+  function userError(msg) { var e = new Error(msg); e.userMessage = msg; return e; }
+  function prepareData(form) {
+    var data = new FormData(form);
+    var inputs = $$('input[type="file"]', form);
+    if (!inputs.length) return Promise.resolve(data);
+    var max = Number(form.getAttribute('data-max-bytes')) || 4194304;
+    var jobs = [];
+    inputs.forEach(function (input) {
+      data.delete(input.name);
+      Array.prototype.forEach.call(input.files || [], function (f) {
+        jobs.push(shrinkImage(f).then(function (g) { return [input.name, g]; }));
+      });
+    });
+    return Promise.all(jobs).then(function (files) {
+      var total = 0;
+      files.forEach(function (x) { total += x[1].size; data.append(x[0], x[1], x[1].name); });
+      if (files.filter(function (x) { return x[0] === 'documents'; }).length > 3) throw userError('Please attach at most 3 documents.');
+      if (total > max) throw userError('The attached files are too large together (' + (total / 1048576).toFixed(1) + ' MB). Please keep them under ' + Math.round(max / 1048576) + ' MB in total.');
+      return data;
+    });
+  }
   function validate(form) {
     var firstBad = null;
     $$('input, select, textarea', form).forEach(function (f) {
@@ -320,14 +358,24 @@
       }
 
       var btn = form.querySelector('[type="submit"]');
+      if (btn.getAttribute('aria-disabled') === 'true') return; // already sending
       btn.setAttribute('aria-disabled', 'true');
       status.textContent = 'Sending…';
-      fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } })
-        .then(function (r) { if (!r.ok) throw new Error(r.status); })
+      prepareData(form)
+        .then(function (data) {
+          return fetch(form.action, { method: 'POST', body: data, headers: { Accept: 'application/json' } }).then(function (r) {
+            if (r.ok) return;
+            return r.json().catch(function () { return {}; }).then(function (j) {
+              var err = new Error('send');
+              err.userMessage = j && j.error;
+              throw err;
+            });
+          });
+        })
         .then(function () { form.reset(); status.textContent = form.getAttribute('data-success'); })
-        .catch(function () {
+        .catch(function (err) {
           status.setAttribute('data-state', 'error');
-          status.textContent = 'Sorry, your submission could not be sent. Please try again, or email nida@friendsofnigeria.net.';
+          status.textContent = (err && err.userMessage) || 'Sorry, your submission could not be sent. Please try again, or email nida@friendsofnigeria.net.';
         })
         .then(function () { btn.removeAttribute('aria-disabled'); });
     });

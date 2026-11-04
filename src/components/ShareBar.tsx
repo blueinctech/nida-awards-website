@@ -1,7 +1,7 @@
 import { Facebook, LinkedIn, LinkIcon, Mail, ShareIcon, WhatsApp, XLogo } from './icons';
 
 // Share links for an honouree page. Copy-link and the native share sheet are wired up in main.js.
-export default function ShareBar({ url, title, text, theme = 'dark' }: { url: string; title: string; text: string; theme?: 'dark' | 'light' }) {
+export default function ShareBar({ url, title, text, theme = 'dark', label = 'Share this profile' }: { url: string; title: string; text: string; theme?: 'dark' | 'light'; label?: string }) {
   const e = encodeURIComponent;
   const links: [string, React.ReactNode, string][] = [
     ['LinkedIn', <LinkedIn key="i" />, `https://www.linkedin.com/sharing/share-offsite/?url=${e(url)}`],
@@ -11,7 +11,7 @@ export default function ShareBar({ url, title, text, theme = 'dark' }: { url: st
   ];
   return (
     <div className={`share share--${theme}`} data-share="" data-url={url} data-title={title} data-text={text}>
-      <p className="share__label">Share this profile</p>
+      <p className="share__label">{label}</p>
       <ul className="share__list" role="list">
         {links.map(([n, ic, href]) => (
           <li key={n}><a className="share__btn" href={href} target="_blank" rel="noopener" aria-label={`Share on ${n} (opens in a new tab)`}>{ic}</a></li>

@@ -1,8 +1,11 @@
 import { Fragment } from 'react';
-import { asset, site, tel } from '@/lib/data';
+import { asset, tel } from '@/lib/data';
+import { getSite } from '@/lib/server/content';
 
 // "The organiser" block. The home page shows it with sponsors and without telephone numbers.
-export default function Organizer({ variant }: { variant: 'home' | 'about' }) {
+export default async function Organizer({ variant }: { variant: 'home' | 'about' }) {
+  const s = await getSite();
+  const site = s.site;
   const o = site.organizer;
   const home = variant === 'home';
   return (
@@ -24,13 +27,16 @@ export default function Organizer({ variant }: { variant: 'home' | 'about' }) {
             {home ? null : <div><dt>Telephone</dt><dd><Phones list={o.phones} /></dd></div>}
             <div><dt>Head office</dt><dd>{o.address}</dd></div>
           </dl>
-          {home ? (
+          {home && site.sponsors.length ? (
             <div className="sponsors" data-reveal="">
               <h3 className="sponsors__title">Our sponsors</h3>
-              {site.sponsors.map((s) => (
-                // eslint-disable-next-line @next/next/no-img-element
-                <span className="sponsors__logo" key={s.name}><img src={asset('img/' + s.logo)} alt={s.name} loading="lazy" width={s.w} height={s.h} /></span>
-              ))}
+              {site.sponsors.map((sp) => {
+                const logo = s.photo(sp.logo)?.variants.slice(-1)[0];
+                return logo ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <span className="sponsors__logo" key={sp.name}><img src={logo.url} alt={sp.name} loading="lazy" width={logo.w} height={logo.h} /></span>
+                ) : null;
+              })}
             </div>
           ) : null}
         </div>

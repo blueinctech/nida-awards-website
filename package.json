@@ -2,23 +2,33 @@
   "name": "nida-awards-website",
   "version": "2.0.0",
   "private": true,
-  "description": "NIDA – Nigerians in Diaspora Awards website (Next.js, static export)",
+  "description": "NIDA – Nigerians in Diaspora Awards website and admin CMS (Next.js)",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "npx serve@14 out -l 8080",
+    "build": "tsx scripts/migrate.ts && next build",
+    "start": "next start",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:backup": "tsx scripts/backup.ts",
+    "admin:create": "tsx scripts/create-admin.ts",
     "images": "python3 tools/optimize_images.py && python3 tools/make_hero_wall.py && python3 tools/make_og.py",
     "share-images": "node tools/make_share.js"
   },
   "dependencies": {
+    "@vercel/blob": "^2.8.2",
+    "marked": "^18.1.3",
     "next": "^16.4.3",
+    "postgres": "^4.0.0",
     "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "react-dom": "^19.3.1",
+    "server-only": "^0.0.1",
+    "sharp": "^0.35.5",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "tsx": "^4.23.15",
     "typescript": "^5.9.3"
   }
 }

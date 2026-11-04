@@ -1,26 +1,34 @@
-// Responsive <img> helpers. The WebP files are made by tools/optimize_images.py.
-import { asset, manifest, photoById } from '@/lib/data';
+// Responsive <img> helpers. Images come from the media library (/admin/media): the photos the
+// site launched with (made by tools/optimize_images.py) and anything uploaded since.
+import { asset } from '@/lib/data';
+import { getSite } from '@/lib/server/content';
+import type { Img, Media } from '@/lib/types';
 import wallSizesJson from '@/data/hero-wall-sizes.json';
 
 const wallSizes = wallSizesJson as Record<string, number[]>;
 
+const srcSetOf = (v: Img[]) => v.map((x) => `${x.url} ${x.w}w`).join(', ');
+
 type PhotoProps = { id: string; sizes?: string; className?: string; eager?: boolean; alt?: string };
 
-export function PhotoImg({ id, sizes = '100vw', className, eager = false, alt }: PhotoProps) {
-  const p = photoById[id];
-  if (!p) throw new Error('Unknown photo ' + id);
-  const variants = [640, 1280, 1920].map((w) => `photos/${id}-${w}.webp`).filter((k) => manifest[k]);
-  const first = manifest[variants[0]];
-  const srcSet = variants.map((k) => `${asset('img/' + k)} ${manifest[k].w}w`).join(', ');
+export async function PhotoImg({ id, sizes = '100vw', className, eager = false, alt }: PhotoProps) {
+  const s = await getSite();
+  const p = s.photo(id);
+  if (!p || !p.variants.length) return null; // a deleted image simply disappears
+  return <MediaImg media={p} sizes={sizes} className={className} eager={eager} alt={alt ?? p.alt} />;
+}
+
+export function MediaImg({ media, sizes = '100vw', className, eager = false, alt }: { media: Media; sizes?: string; className?: string; eager?: boolean; alt?: string }) {
+  const first = media.variants[0];
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={asset('img/' + variants[0])}
-      srcSet={srcSet}
+      src={first.url}
+      srcSet={srcSetOf(media.variants)}
       sizes={sizes}
       width={first.w}
       height={first.h}
-      alt={alt ?? p.alt}
+      alt={alt ?? media.alt}
       className={className}
       loading={eager ? 'eager' : 'lazy'}
       decoding="async"
@@ -30,25 +38,34 @@ export function PhotoImg({ id, sizes = '100vw', className, eager = false, alt }:
 }
 
 // Largest available size of a photo, used by the lightbox
-export function photoLargest(id: string) {
-  const keys = [1920, 1280, 640].map((w) => `photos/${id}-${w}.webp`).filter((k) => manifest[k]);
-  return asset('img/' + keys[0]);
+export function largest(m: Media | undefined) {
+  return m ? m.variants[m.variants.length - 1]?.url || m.url : '';
 }
 
 type PortraitProps = { slug: string; sizes?: string; className?: string; eager?: boolean; alt?: string; [data: `data-${string}`]: string };
 
-export function PortraitImg({ slug, sizes = '(max-width: 760px) 50vw, 300px', className, eager = false, alt = '', ...rest }: PortraitProps) {
-  const s = asset(`img/awardees/${slug}-360.webp`);
-  const l = asset(`img/awardees/${slug}-594.webp`);
+export async function PortraitImg({ slug, sizes = '(max-width: 760px) 50vw, 300px', className, eager = false, alt = '', ...rest }: PortraitProps) {
+  const s = await getSite();
+  const a = s.bySlug[slug];
+  const m = a ? s.portrait(a) : undefined;
+  const v = m ? m.extra.portrait || m.variants : [];
+  if (!v.length) {
+    // No photograph yet: keep the card's shape with the NIDA trophy mark
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img {...rest} src={asset('img/brand/trophy-gold.png')} width={594} height={754} alt={alt} className={className} loading="lazy" decoding="async" style={{ objectFit: 'contain', padding: '18%', background: 'var(--color-forest)' }} />
+    );
+  }
+  const l = v[v.length - 1];
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
       {...rest}
-      src={l}
-      srcSet={`${s} 360w, ${l} 594w`}
+      src={l.url}
+      srcSet={srcSetOf(v)}
       sizes={sizes}
-      width={594}
-      height={754}
+      width={l.w}
+      height={l.h}
       alt={alt}
       className={className}
       loading={eager ? 'eager' : 'lazy'}
@@ -60,7 +77,7 @@ export function PortraitImg({ slug, sizes = '(max-width: 760px) 50vw, 300px', cl
 // Award-night crop for the home hero wall (made by tools/make_hero_wall.py, always 3:4)
 export function WallImg({ id, sizes, eager = false }: { id: string; sizes: string; eager?: boolean }) {
   const widths = wallSizes[id];
-  if (!widths) throw new Error('Unknown hero wall photo ' + id);
+  if (!widths) return null;
   const top = widths[widths.length - 1];
   return (
     // eslint-disable-next-line @next/next/no-img-element
