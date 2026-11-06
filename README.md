@@ -13,7 +13,7 @@ The site now needs a Node server and a database (it is no longer a static export
 
 1. In [Vercel](https://vercel.com/new), import the GitHub repository `nida-awards-website`. Keep the defaults (framework Next.js, build command `npm run build`).
 2. In the project, open **Storage** → **Create Database** → **Neon (Postgres)**, and connect it to the project. This sets `DATABASE_URL` for you.
-3. Still in **Storage**, create a **Blob** store and connect it. This sets `BLOB_READ_WRITE_TOKEN`. Uploaded images and documents are stored there, not in the database.
+3. Still in **Storage**, create a **Blob** store and connect it. This sets `BLOB_STORE_ID` (or `BLOB_READ_WRITE_TOKEN` on older setups). Uploaded images and documents are stored there, not in the database.
 4. In **Settings → Environment Variables**, add `ADMIN_SETUP_TOKEN` with a long random value (at least 16 characters, for example from a password manager). Keep it private: it is only needed once, to create the first administrator.
 5. Redeploy (**Deployments** → ⋯ → **Redeploy**). Every build first runs the database migrations. On the very first build the database is filled with the current website content (texts, awardees, events, photos), so the site looks exactly as before.
 
@@ -47,7 +47,7 @@ If every Super Admin has lost access, someone with the database address can run 
 | Name | Required | What it is |
 | --- | --- | --- |
 | `DATABASE_URL` | yes | Postgres connection string (set by the Neon integration). |
-| `BLOB_READ_WRITE_TOKEN` | yes on Vercel | Vercel Blob store for uploads (set by the Blob integration). Locally, files go to `.data/uploads` instead. |
+| `BLOB_STORE_ID` or `BLOB_READ_WRITE_TOKEN` | yes on Vercel | Vercel Blob store for uploads, set when the Blob store is connected (newer projects get `BLOB_STORE_ID` and sign in with OIDC; older ones a read-write token). Locally, files go to `.data/uploads` instead. |
 | `ADMIN_SETUP_TOKEN` | first setup only | Secret code for `/admin/setup`. Remove it after creating the first Super Admin. |
 | `RESEND_API_KEY`, `EMAIL_FROM` | optional | Sends invitations, password resets and new-submission alerts with [Resend](https://resend.com) (`EMAIL_FROM` like `NIDA <admin@nida-awards.org>`, on a domain verified in Resend). Without them, links are shown in the admin to copy. |
 | `ADMIN_URL` | optional | Address used in emailed links, for example `https://nida-awards.org`. Defaults to the Vercel production address. |

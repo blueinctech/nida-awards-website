@@ -6,7 +6,7 @@ import { randomBytes } from 'node:crypto';
 import { siteOrigin } from './email';
 
 // Where uploaded files live:
-//  - 'blob'  Vercel Blob (BLOB_READ_WRITE_TOKEN set). Used in production on Vercel.
+//  - 'blob'  Vercel Blob (BLOB_STORE_ID via OIDC, or BLOB_READ_WRITE_TOKEN). Used in production on Vercel.
 //  - 'local' a folder on the server's disk (UPLOAD_DIR, default .data/uploads). For local
 //            development or a self-managed Node server with a persistent disk.
 // Large files are never stored in the database; it only keeps their address.
@@ -21,7 +21,9 @@ export function blobToken(): string | undefined {
 }
 
 export function storageMode(): StorageMode {
-  if (blobToken()) return 'blob';
+  // A connected store gives either a read-write token or, with Vercel OIDC, BLOB_STORE_ID.
+  // With OIDC the SDK signs requests itself, so no token is needed.
+  if (blobToken() || process.env.BLOB_STORE_ID) return 'blob';
   if (process.env.VERCEL) return 'none'; // Vercel's disk is temporary, so a Blob store is required there
   return 'local';
 }
