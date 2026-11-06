@@ -1,8 +1,8 @@
 import type { MetadataRoute } from 'next';
-import { site } from '@/lib/data';
+import { SITE_URL } from '@/lib/data';
 
 export const dynamic = 'force-static';
 
 export default function robots(): MetadataRoute.Robots {
-  return { rules: { userAgent: '*', allow: '/' }, sitemap: `${site.url}/sitemap.xml` };
+  return { rules: { userAgent: '*', allow: '/', disallow: ['/admin/', '/api/'] }, sitemap: `${SITE_URL}/sitemap.xml` };
 }

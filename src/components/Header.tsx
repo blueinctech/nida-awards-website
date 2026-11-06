@@ -1,4 +1,5 @@
-import { asset, page, site } from '@/lib/data';
+import { asset, page } from '@/lib/data';
+import { getSite } from '@/lib/server/content';
 import { SocialIcon } from './icons';
 
 export const NAV = [
@@ -10,7 +11,8 @@ export const NAV = [
   { slug: 'contact', label: 'Contact' },
 ];
 
-export function SocialLinks({ style }: { style?: React.CSSProperties }) {
+export async function SocialLinks({ style }: { style?: React.CSSProperties }) {
+  const { site } = await getSite();
   return (
     <>
       {site.social.map((s) => (
@@ -23,9 +25,16 @@ export function SocialLinks({ style }: { style?: React.CSSProperties }) {
 }
 
 // The menu, its toggle and focus handling are driven by public/assets/js/main.js.
-export default function Header({ current }: { current?: string }) {
+// "News" joins the menu once at least one article is published.
+export async function navItems() {
+  const s = await getSite();
+  return s.posts.length ? [...NAV.slice(0, 5), { slug: 'news', label: 'News' }, NAV[5]] : NAV;
+}
+
+export default async function Header({ current }: { current?: string }) {
   const cur = (slug: string) => (current === slug ? ('page' as const) : undefined);
-  const mobile = [{ slug: '', label: 'Home' }, ...NAV, { slug: 'nomination', label: 'Nominate' }];
+  const nav = await navItems();
+  const mobile = [{ slug: '', label: 'Home' }, ...nav, { slug: 'nomination', label: 'Nominate' }];
   return (
     <>
       <a className="skip-link" href="#main">Skip to content</a>
@@ -37,7 +46,7 @@ export default function Header({ current }: { current?: string }) {
           </a>
           <nav className="nav" aria-label="Main">
             <ul className="nav__list">
-              {NAV.map((n) => (
+              {nav.map((n) => (
                 <li key={n.slug}><a className="nav__link" href={page(n.slug)} aria-current={cur(n.slug)}>{n.label}</a></li>
               ))}
             </ul>

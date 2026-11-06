@@ -1,12 +1,14 @@
-import { site } from '@/lib/data';
+import { getSite } from '@/lib/server/content';
 import { Arrow } from './icons';
 
-// "Save the date" mailing-list form. Behaviour depends on site.newsletter (see src/data/site.ts);
-// submission is handled by public/assets/js/main.js.
-export default function NewsletterForm({ id = 'nl', theme = 'light', button = 'Keep me informed' }: { id?: string; theme?: 'light' | 'dark'; button?: string }) {
+// "Save the date" mailing-list form. Behaviour is set in /admin → Website content → Forms;
+// submission is handled by src/scripts/main.js.
+export default async function NewsletterForm({ id = 'nl', theme = 'light', button = 'Keep me informed' }: { id?: string; theme?: 'light' | 'dark'; button?: string }) {
+  const { site } = await getSite();
   const n = site.newsletter;
-  const mode = n.provider && n.endpoint ? n.provider : 'mailto';
-  const action = mode === 'mailto' ? {} : { action: n.endpoint, method: 'post' };
+  // 'cms': sign-ups are stored and listed in /admin/messages. 'mailto': the visitor's email app opens.
+  const mode = n.mode === 'cms' ? 'post' : 'mailto';
+  const action = mode === 'mailto' ? {} : { action: '/api/newsletter/', method: 'post' };
   return (
     <form className={`nl-form nl-form--${theme}`} {...action} noValidate data-newsletter={mode} data-to={n.email} data-edition={n.edition}>
       <div className="nl-form__row">

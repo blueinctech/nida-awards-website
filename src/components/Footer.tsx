@@ -1,9 +1,13 @@
-import { asset, page, site, tel } from '@/lib/data';
-import { NAV, SocialLinks } from './Header';
+import { asset, fill, page, tel } from '@/lib/data';
+import { getSite } from '@/lib/server/content';
+import { SocialLinks, navItems } from './Header';
 import { Arrow, Star } from './icons';
 
-export default function Footer() {
-  const year = new Date().getFullYear(); // year of the build
+export default async function Footer() {
+  const { site, editions } = await getSite();
+  const nav = await navItems();
+  const f = site.footer;
+  const vars = { year: new Date().getFullYear(), organiser: site.organizer.name, edition: site.newsletter.edition };
   return (
     <footer className="site-footer">
       <div className="container site-footer__top">
@@ -12,18 +16,18 @@ export default function Footer() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={asset('img/brand/nida-logo-white.png')} width={726} height={201} alt="NIDA, Nigerians in Diaspora Awards" loading="lazy" />
           </a>
-          <p style={{ maxWidth: '34ch' }}>Celebrating the outstanding achievements of Nigerians living abroad. Organised by {site.organizer.name}.</p>
+          <p style={{ maxWidth: '34ch' }}>{fill(f.tagline, vars)}</p>
           <div className="social"><SocialLinks /></div>
           <a className="site-footer__std" href={page('', 'save-the-date')}>
             <Star />
-            <span><b>Save the date</b>NIDA {site.newsletter.edition} news by email</span>
+            <span><b>Save the date</b>{fill(f.saveDateLabel, vars)}</span>
             <Arrow />
           </a>
         </div>
         <div>
           <h2>Explore</h2>
           <ul>
-            {NAV.map((n) => (
+            {nav.map((n) => (
               <li key={n.slug}><a href={page(n.slug)}>{n.label === 'About' ? 'About NIDA' : n.label}</a></li>
             ))}
             <li><a href={page('nomination')}>Nomination</a></li>
@@ -32,7 +36,7 @@ export default function Footer() {
         <div>
           <h2>Editions</h2>
           <ul>
-            {site.editions.map((e) => (
+            {editions.map((e) => (
               <li key={e.year}><a href={page('editions', 'nida-' + e.year)}>NIDA {e.year}</a></li>
             ))}
           </ul>
@@ -49,8 +53,8 @@ export default function Footer() {
         </div>
       </div>
       <div className="container site-footer__bottom">
-        <p>© {year} Nigerians in Diaspora Awards (NIDA). All rights reserved.</p>
-        <p>Developed and maintained by <a href="https://blueinctech.com" target="_blank" rel="noopener">Blueinc Technologies</a></p>
+        <p>{fill(f.copyright, vars)}</p>
+        {f.creditLabel ? <p>Developed and maintained by <a href={f.creditUrl} target="_blank" rel="noopener">{f.creditLabel}</a></p> : null}
       </div>
     </footer>
   );

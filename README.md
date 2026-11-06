@@ -1,80 +1,101 @@
 # NIDA – Nigerians in Diaspora Awards website
 
-The nida-awards.org website, built with [Next.js](https://nextjs.org) (App Router) and exported as a static site. See `AUDIT.md` for the audit, the verified brand colours and the content NIDA needs to confirm.
+The nida-awards.org website and its admin dashboard (CMS), built with [Next.js](https://nextjs.org) (App Router) and Postgres. See `AUDIT.md` for the audit, the verified brand colours and the content NIDA needs to confirm.
 
-## Quick start
+- **Public website**: the pages at `/`, `/awards/`, `/awardees/`, `/news/` and so on. Pages are pre-rendered and refreshed automatically when something is published in the admin.
+- **Admin dashboard** at `/admin`: sign in to edit website content, awardees, events, news, media, and to review nominations and messages. There is no public sign-up.
+
+## Admin CMS setup
+
+The site now needs a Node server and a database (it is no longer a static export, so uploading `out/` to a plain web host no longer works). The recommended setup is **Vercel** with a **Neon Postgres** database and a **Vercel Blob** store, all created from the Vercel dashboard. The free tiers are enough for NIDA.
+
+### 1. Deploy and connect storage
+
+1. In [Vercel](https://vercel.com/new), import the GitHub repository `nida-awards-website`. Keep the defaults (framework Next.js, build command `npm run build`).
+2. In the project, open **Storage** → **Create Database** → **Neon (Postgres)**, and connect it to the project. This sets `DATABASE_URL` for you.
+3. Still in **Storage**, create a **Blob** store and connect it. This sets `BLOB_READ_WRITE_TOKEN`. Uploaded images and documents are stored there, not in the database.
+4. In **Settings → Environment Variables**, add `ADMIN_SETUP_TOKEN` with a long random value (at least 16 characters, for example from a password manager). Keep it private: it is only needed once, to create the first administrator.
+5. Redeploy (**Deployments** → ⋯ → **Redeploy**). Every build first runs the database migrations. On the very first build the database is filled with the current website content (texts, awardees, events, photos), so the site looks exactly as before.
+
+### 2. Create the first Super Admin
+
+Open `https://<your-site>/admin/setup`, enter the setup code (`ADMIN_SETUP_TOKEN`), your name, email and a password (at least 12 characters, with letters and numbers or symbols). This page only works while no administrator exists; afterwards it is closed for good. You can then delete `ADMIN_SETUP_TOKEN` from Vercel.
+
+Alternative from a computer with the repository: `DATABASE_URL=… npm run admin:create` asks for the details in the terminal (the password is not shown or stored in any file).
+
+### 3. Daily use
+
+- **Sign in** at `/admin` (the sign-in page is `/admin/login`). Sessions end after 12 hours without activity. After 5 wrong passwords an account is locked for 15 minutes.
+- **Change your password**: My account → Change password. Other devices are signed out.
+- **Forgotten password**: "Forgot your password?" on the sign-in page sends a reset link if email is set up (below). Otherwise a Super Admin opens Administrators → the person → **Create reset link** and sends them the link.
+- **Add administrators**: Administrators → **Invite administrator**. Choose a role:
+  - **Super Admin**: everything, including administrators, the activity log and backups.
+  - **Editor**: edits and publishes content, awardees, events, articles and media; manages nominations and messages.
+  - **Viewer**: read-only.
+  The invitation link (valid 7 days, usable once) lets the person choose their own password. Nobody ever sees another person's password.
+- **Remove access**: set the status to **Deactivated** (signed out everywhere at once) or delete the account. There must always be at least one active Super Admin.
+- **Website content**: edit texts and images, **Save draft**, use **Preview** to see the draft on the real site (only you see it), then **Publish**.
+- **Opening nominations**: Website content → Awards & nominations → tick "Nominations are open". Entries, including uploaded photos and documents, then appear under Nominations. Uploaded nomination files are private: they only open for signed-in administrators.
+- **Activity log**: every change is recorded with who made it and when.
+
+### Locked out?
+
+If every Super Admin has lost access, someone with the database address can run `DATABASE_URL=… npm run admin:create` with an existing email to set a new password and restore Super Admin access.
+
+### Environment variables
+
+| Name | Required | What it is |
+| --- | --- | --- |
+| `DATABASE_URL` | yes | Postgres connection string (set by the Neon integration). |
+| `BLOB_READ_WRITE_TOKEN` | yes on Vercel | Vercel Blob store for uploads (set by the Blob integration). Locally, files go to `.data/uploads` instead. |
+| `ADMIN_SETUP_TOKEN` | first setup only | Secret code for `/admin/setup`. Remove it after creating the first Super Admin. |
+| `RESEND_API_KEY`, `EMAIL_FROM` | optional | Sends invitations, password resets and new-submission alerts with [Resend](https://resend.com) (`EMAIL_FROM` like `NIDA <admin@nida-awards.org>`, on a domain verified in Resend). Without them, links are shown in the admin to copy. |
+| `ADMIN_URL` | optional | Address used in emailed links, for example `https://nida-awards.org`. Defaults to the Vercel production address. |
+| `SITE_URL` | optional | Canonical public address used in share tags and the sitemap. Defaults to `https://nida-awards.org`. |
+
+None of these values are ever sent to the browser. Never commit them to the repository.
+
+### Backups
+
+1. **Automatic**: Neon keeps a history of the database and can restore it to an earlier moment (Neon console → Branches → Restore).
+2. **Manual download**: a Super Admin can download the whole content as JSON from System & backups (passwords are never included). Do this regularly, for example monthly and before large changes.
+3. **From a computer**: `DATABASE_URL=… npm run db:backup` writes the same JSON file to `backups/`.
+
+Uploaded files stay in the Blob store, separate from the database; the backup lists the address of each file.
+
+## Local development
 
 ```bash
 npm install
-npm run dev     # local preview with live reload at http://localhost:3000
-npm run build   # writes the production site to out/
-npm start       # preview the built site at http://localhost:8080
+cp .env.example .env.local   # then set DATABASE_URL to a local or Neon Postgres database
+npm run db:migrate           # creates the tables and imports the launch content
+npm run dev                  # http://localhost:3000, admin at http://localhost:3000/admin
+npm run build && npm start   # production build
 ```
 
-Node 20.9+ is required. `npm run build` produces plain HTML, CSS, JavaScript and images in `out/`, so the site needs no Node server: upload the contents of `out/` to any web host, or deploy the repository to Vercel, Netlify, Cloudflare Pages or GitHub Pages. On Apache the build includes an `.htaccess` (from `public/.htaccess`) with compression, caching, the 404 page and redirects for two old WordPress URLs.
+Node 20.9+ is required. Without `DATABASE_URL` the public site still builds from the launch content in `src/data/`, but the admin and the forms are unavailable.
 
-## Editing content
+## Content and images
 
-All text lives in `src/data/`:
-
-- `site.ts` – organiser details, contacts, social links, sponsors, mission and vision, categories, criteria, editions, and the nomination switch
-- `awardees.json` – every award recipient (year, award, category group, biography paragraphs)
-- `photos.json` – event photographs with their edition year and alt text
-- `portraits.json` – which original image file is each awardee's portrait
-- `manifest.json` – image sizes, written by `npm run images`
-
-Then run `npm run build` (or keep `npm run dev` open to see changes immediately).
-
-### Adding a new edition or new awardees
-
-1. Add the edition to `editions` in `src/data/site.ts`.
-2. Add each awardee to `awardees.json`, put the original portrait (ideally 594 × 754 or larger) in `raw/` and list it in `portraits.json`.
-3. Add new photos to `raw/` and `photos.json` (id format `YYYY-NN`).
-4. `npm run images` (needs Python 3 with Pillow), then `npm run build`.
-
-### Honouree pages and share images
-
-Every entry in `awardees.json` gets its own page at `/awardees/<slug>/` (`src/app/awardees/[slug]/page.tsx`), with Open Graph and X/Twitter tags, structured data and share links. Each page uses a 1200 × 630 share image from `public/assets/img/og/awardees/<slug>.jpg`. After adding or changing an honouree, regenerate the images:
-
-```bash
-npm run share-images   # needs Playwright + Chromium: npm i -D playwright && npx playwright install chromium
-npm run build
-```
-
-Old links of the form `/awardees/#<slug>` redirect to the new page.
+Day-to-day content (texts, awardees, events, news, photos) is edited in the admin. The files in `src/data/` are only the launch content imported into a new, empty database. The hero wall and the globe below are still configured in code:
 
 ### Home page globe
 
 The hero's moving wall mixes award-night photos from nida-awards.org (honourees holding NIDA trophies, presentations, acceptance speeches, 2023 to 2025) with verified honouree portraits. The tiles, their order per column and their captions live in `src/data/hero-wall.json`; after changing a photo or its crop, run `python3 tools/make_hero_wall.py` to rebuild the 3:4 crops in `public/assets/img/hero/wall/`. Only name a person on a photo tile when the photo is already credited to them (it then links to their profile; other photo tiles link to the gallery). Keep about nine tiles per column so the scroll speed stays the same.
 
-The section under the hero shows ten honourees around a dotted globe centred on Nigeria (`src/scripts/globe.js`, drawn on a canvas with the brand colours only). To change who appears, edit the `ORBIT` list in `src/app/page.tsx` (slug, x, y and size as percentages of the square stage; `'wide'` hides that portrait on phones), add a crop for any new person in `tools/make_faces.py` and run `python3 tools/make_faces.py`. The map data in `public/assets/js/globe-data.js` comes from Natural Earth (public domain) and is rebuilt with `python3 tools/make_globe.py raw/geo`. Without JavaScript, or with reduced motion turned on, the section shows a still globe and every portrait link still works.
-
-### "Save the date" mailing list
-
-The home page (and the nomination page) has a sign-up form for news about the next edition. Configure it in `src/data/site.ts` under `newsletter`:
-
-- `provider: ''` (current): the address is validated, then the visitor's email app opens with a ready-made subscription request to `nida@friendsofnigeria.net`. Someone at NIDA must add those addresses to a list by hand.
-- `provider: 'mailchimp'`: set `endpoint` to the `action` URL of a Mailchimp embedded form (`https://<dc>.list-manage.com/subscribe/post?u=…&id=…`). Subscriptions go straight into the audience, with success, error and "already subscribed" messages.
-- `provider: 'post'`: set `endpoint` to any service that accepts a POST with an `email` field and answers 2xx (Formspree, Basin, Netlify Forms, or a small endpoint on NIDA's server).
-
-Change `edition` when the next year is announced.
-
-### Opening nominations
-
-In `src/data/site.ts` set `nominations.open: true`, `nominations.edition` and `nominations.deadline`, update `statusTitle` / `statusText`, and set `nominations.endpoint` to a form backend that accepts a normal POST (for example Formspree, Basin, Netlify Forms, or a small endpoint on NIDA's WordPress server). The form uses the same fields and categories as the old Gravity Forms nomination form. Without an endpoint the form is never shown, so the site never shows a form that cannot submit. The status text only states verified facts (currently: the 2026 deadline of 7 July 2026 published on NIDA's official form).
-
-### Contact form
-
-With `contact.endpoint` empty, the form opens the visitor's email app addressed to the NIDA email. Set an endpoint to receive messages directly.
+The section under the hero shows ten honourees around a dotted globe centred on Nigeria (`src/scripts/globe.js`, drawn on a canvas with the brand colours only). To change who appears, edit the `ORBIT` list in `src/app/(site)/page.tsx` (slug, x, y and size as percentages of the square stage; `'wide'` hides that portrait on phones), add a crop for any new person in `tools/make_faces.py` and run `python3 tools/make_faces.py`. The map data in `public/assets/js/globe-data.js` comes from Natural Earth (public domain) and is rebuilt with `python3 tools/make_globe.py raw/geo`. Without JavaScript, or with reduced motion turned on, the section shows a still globe and every portrait link still works.
 
 ## Structure
 
 ```
-src/app/                 one folder per page (App Router); layout.tsx holds the <html> shell
-  page.tsx               home page
-  awardees/[slug]/       one page per honouree, generated from awardees.json
-  not-found.tsx          404 page (exported as out/404.html)
-  sitemap.ts, robots.ts  sitemap.xml and robots.txt
+src/app/(site)/          public pages (App Router); page.tsx is the home page
+  awardees/[slug]/       one page per honouree
+  news/                  news and blog
+  sitemap.ts, robots.ts  sitemap.xml and robots.txt (in src/app/)
+src/app/admin/           admin dashboard: (auth) sign-in pages, (panel) admin screens, actions/ server actions
+src/app/api/             form endpoints, uploads, exports and backups
+src/lib/server/          database, sessions and roles, storage, image processing (server only)
+db/migrations/           database schema; scripts/ holds migrate, backup and admin:create
 src/components/          header, footer, page hero, images, forms, share bar, icons
 src/lib/data.ts          content helpers and URL helpers
 src/lib/meta.ts          titles, descriptions, canonical URLs and social share tags
@@ -86,7 +107,7 @@ tools/                   image optimisation, face crops, globe data, share image
 raw/                     original images downloaded from nida-awards.org
 ```
 
-Pages are React Server Components rendered to static HTML at build time. The interactive parts (`src/scripts/`) are small plain-JavaScript enhancements that run once the page has loaded; every page is fully readable without them. Pages link to each other with normal links, so each visit loads a complete, pre-rendered page.
+Public pages are React Server Components, pre-rendered and refreshed when the admin publishes a change. The interactive parts (`src/scripts/`) are small plain-JavaScript enhancements that run once the page has loaded; every page is fully readable without them. Pages link to each other with normal links, so each visit loads a complete, pre-rendered page.
 
 ## Fonts and typography
 

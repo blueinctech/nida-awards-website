@@ -1,11 +1,10 @@
 import type { Metadata, Viewport } from 'next';
-import { preload } from 'react-dom';
-import { site } from '@/lib/data';
-import { MainScript } from '@/components/ClientScripts';
-import '@/styles/main.css';
+import { SITE_URL } from '@/lib/data';
 
+// The <html> shell shared by the public site and the admin dashboard. The public design
+// (styles, fonts and scripts) is loaded by app/(site)/layout.tsx; the admin has its own.
 export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
+  metadataBase: new URL(SITE_URL),
   icons: {
     icon: [
       { url: '/assets/img/brand/favicon-32.png', sizes: '32x32' },
@@ -23,19 +22,13 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  // Start loading the two main fonts straight away
-  preload('/assets/fonts/adventor-bold.woff2', { as: 'font', type: 'font/woff2', crossOrigin: '' });
-  preload('/assets/fonts/montserrat-latin.woff2', { as: 'font', type: 'font/woff2', crossOrigin: '' });
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         {/* Lets the CSS hide scroll-reveal content only when JavaScript is running */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
       </head>
-      <body>
-        {children}
-        <MainScript />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

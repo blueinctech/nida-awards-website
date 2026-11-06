@@ -45,4 +45,13 @@ export const Star = () => (
   <svg className="star-mark" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 1.8l2.95 6.6 7.2.75-5.4 4.85 1.55 7.1L12 17.45 5.7 21.1l1.55-7.1-5.4-4.85 7.2-.75z" /></svg>
 );
 
-export const SocialIcon = ({ name }: { name: string }) => (name === 'LinkedIn' ? <LinkedIn /> : <Instagram />);
+// Icon for a social network by name (set in /admin → Contact & forms). Unknown names get a link icon.
+export const SocialIcon = ({ name }: { name: string }) => {
+  const n = name.toLowerCase();
+  if (n.includes('linkedin')) return <LinkedIn />;
+  if (n.includes('instagram')) return <Instagram />;
+  if (n.includes('facebook')) return <Facebook />;
+  if (n === 'x' || n.includes('twitter')) return <XLogo />;
+  if (n.includes('whatsapp')) return <WhatsApp />;
+  return <LinkIcon />;
+};
