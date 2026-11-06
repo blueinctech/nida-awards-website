@@ -32,7 +32,7 @@ export default async function SystemPage() {
         <Card title="Services">
           <dl className="meta-list">
             <div><dt>Database</dt><dd>{ok(true, `${provider} connected, ${fmtSize(Number(c.db_bytes))} used.`, '')}</dd></div>
-            <div><dt>File storage</dt><dd>{storage === 'blob' ? ok(true, 'Vercel Blob. Uploads are kept outside the database.', '') : storage === 'local' ? ok(true, 'Server disk (local development or a self-managed server).', '') : ok(false, '', 'No Blob token found, so uploads are disabled. In Vercel, connect the Blob store to this project for the Production environment (it adds BLOB_READ_WRITE_TOKEN), then redeploy.')}</dd></div>
+            <div><dt>File storage</dt><dd>{storage === 'blob' ? ok(true, 'Vercel Blob. Uploads are kept outside the database.', '') : storage === 'local' ? ok(true, 'Server disk (local development or a self-managed server).', '') : ok(false, '', 'No Blob token found, so uploads are disabled. In Vercel, connect the Blob store to this project for the Production environment (it adds BLOB_STORE_ID), then redeploy.')}</dd></div>
             <div><dt>Email</dt><dd>{ok(emailEnabled(), 'Invitations, password resets and new-submission alerts are emailed.', 'Not set up. Invitation and reset links are shown here for you to send yourself, and new submissions appear in the admin only.')}</dd></div>
             <div><dt>Uploaded files</dt><dd>{c.media} items in the media library, {fmtSize(Number(c.media_bytes))} uploaded.</dd></div>
           </dl>
