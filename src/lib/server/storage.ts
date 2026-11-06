@@ -12,8 +12,16 @@ import { siteOrigin } from './email';
 // Large files are never stored in the database; it only keeps their address.
 export type StorageMode = 'blob' | 'local' | 'none';
 
+// Vercel names the token BLOB_READ_WRITE_TOKEN by default, but adds a custom prefix when one is
+// chosen while connecting the store (for example NIDA_BLOB_READ_WRITE_TOKEN). Accept either.
+export function blobToken(): string | undefined {
+  if (process.env.BLOB_READ_WRITE_TOKEN) return process.env.BLOB_READ_WRITE_TOKEN;
+  const key = Object.keys(process.env).find((k) => k.endsWith('READ_WRITE_TOKEN') && process.env[k]?.startsWith('vercel_blob_rw_'));
+  return key ? process.env[key] : undefined;
+}
+
 export function storageMode(): StorageMode {
-  if (process.env.BLOB_READ_WRITE_TOKEN) return 'blob';
+  if (blobToken()) return 'blob';
   if (process.env.VERCEL) return 'none'; // Vercel's disk is temporary, so a Blob store is required there
   return 'local';
 }
@@ -30,7 +38,7 @@ export async function putFile(key: string, body: Buffer, contentType: string): P
   const mode = storageMode();
   if (mode === 'none') throw new Error('File storage is not set up. Add a Vercel Blob store to the project (see README).');
   if (mode === 'blob') {
-    const res = await put(key, body, { access: 'public', addRandomSuffix: true, contentType, cacheControlMaxAge: 31536000 });
+    const res = await put(key, body, { token: blobToken(), access: 'public', addRandomSuffix: true, contentType, cacheControlMaxAge: 31536000 });
     return { url: res.url, key: res.url, storage: 'blob' };
   }
   const full = path.join(/* turbopackIgnore: true */ uploadDir(), key);
@@ -43,7 +51,7 @@ export async function putFile(key: string, body: Buffer, contentType: string): P
 export async function deleteFiles(keys: string[], storage: string) {
   if (!keys.length) return;
   try {
-    if (storage === 'blob') await del(keys);
+    if (storage === 'blob') await del(keys, { token: blobToken() });
     else if (storage === 'local') {
       for (const k of keys) {
         const full = path.join(/* turbopackIgnore: true */ uploadDir(), k);
