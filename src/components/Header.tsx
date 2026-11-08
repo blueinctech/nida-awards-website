@@ -42,7 +42,7 @@ export default async function Header({ current }: { current?: string }) {
         <div className="container site-header__inner">
           <a className="brand" href={page('')} aria-label="NIDA, Nigerians in Diaspora Awards, home">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={asset('img/brand/nida-logo-white.png')} width={726} height={201} alt="NIDA, Nigerians in Diaspora Awards" />
+            <img src={asset('img/brand/nida-logo-white-340.png')} width={340} height={94} alt="NIDA, Nigerians in Diaspora Awards" />
           </a>
           <nav className="nav" aria-label="Main">
             <ul className="nav__list">

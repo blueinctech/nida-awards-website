@@ -15,7 +15,9 @@ type PageMeta = {
 
 export function pageMetadata({ slug, title, description, ogImage, ogImageAlt, ogType = 'website', ogTitle }: PageMeta): Metadata {
   const pageUrl = SITE_URL + '/' + (slug ? slug + '/' : '');
-  const fullTitle = slug ? `${title} | NIDA, Nigerians in Diaspora Awards` : title;
+  // Search results cut titles at about 60 characters, so long titles (honouree pages) get the short brand
+  const suffix = title.length > 40 ? ' | NIDA Awards' : ' | NIDA, Nigerians in Diaspora Awards';
+  const fullTitle = slug ? title + suffix : title;
   const og = ogImage && /^(https?:|\/)/.test(ogImage) ? absolute(ogImage) : SITE_URL + '/assets/img/og/' + (ogImage || 'og-default.jpg');
   const shareTitle = ogTitle || fullTitle;
   return {
