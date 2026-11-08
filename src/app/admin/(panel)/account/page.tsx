@@ -30,7 +30,7 @@ export default async function AccountPage() {
         <Card title="Change password">
           <ActionForm action={changeOwnPassword} className="stack" reset>
             <Field name="current" label="Current password" type="password" required />
-            <Field name="password" label="New password" type="password" required hint="At least 12 characters, with letters and numbers or symbols. A short sentence works well." />
+            <Field name="password" label="New password" type="password" required hint="At least 8 characters, with letters and numbers or symbols. A short sentence works well." />
             <Field name="confirm" label="New password again" type="password" required />
             <div><Submit>Change password</Submit></div>
           </ActionForm>

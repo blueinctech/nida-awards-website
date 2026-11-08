@@ -40,7 +40,7 @@ export async function verifyPassword(password: string, stored: string | null) {
 }
 
 export function passwordProblem(pw: string): string | null {
-  if (pw.length < 12) return 'Use at least 12 characters.';
+  if (pw.length < 8) return 'Use at least 8 characters.';
   if (pw.length > 200) return 'Use at most 200 characters.';
   if (!/[a-z]/i.test(pw) || !/[0-9\W_]/.test(pw)) return 'Use a mix of letters and numbers or symbols.';
   return null;

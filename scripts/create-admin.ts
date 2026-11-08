@@ -40,7 +40,7 @@ async function main() {
   const password = process.env.ADMIN_PASSWORD || (await ask('Password (12+ characters): ', true));
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error('That email address is not valid.');
   if (!name) throw new Error('A name is required.');
-  if (password.length < 12) throw new Error('Use a password of at least 12 characters.');
+  if (password.length < 8) throw new Error('Use a password of at least 8 characters.');
   const salt = randomBytes(16);
   const key = await scrypt(password.normalize('NFKC'), salt, 64, { N: 16384, r: 8, p: 1, maxmem: 64 * 1024 * 1024 });
   const hash = `scrypt$16384$8$1$${salt.toString('base64')}$${key.toString('base64')}`;
