@@ -28,8 +28,8 @@ export default async function ResetPage({ searchParams }: { searchParams: Promis
       <ActionForm action={resetPassword} className="stack">
         <input type="hidden" name="token" value={token} />
         <input type="hidden" name="username" value={t.email} autoComplete="username" />
-        <div className="f"><label htmlFor="password">New password</label><input id="password" name="password" type="password" autoComplete="new-password" minLength={12} required autoFocus /><p className="f-hint">At least 12 characters, with letters and numbers or symbols. A short sentence works well.</p></div>
-        <div className="f"><label htmlFor="confirm">Repeat the password</label><input id="confirm" name="confirm" type="password" autoComplete="new-password" minLength={12} required /></div>
+        <div className="f"><label htmlFor="password">New password</label><input id="password" name="password" type="password" autoComplete="new-password" minLength={8} required autoFocus /><p className="f-hint">At least 8 characters, with letters and numbers or symbols. A short sentence works well.</p></div>
+        <div className="f"><label htmlFor="confirm">Repeat the password</label><input id="confirm" name="confirm" type="password" autoComplete="new-password" minLength={8} required /></div>
         <Submit className="btn btn--primary btn--block">{t.purpose === 'invite' ? 'Activate my account' : 'Save new password'}</Submit>
       </ActionForm>
     </>

@@ -125,3 +125,38 @@ export async function setupFirstAdmin(_: ActionState, fd: FormData): Promise<Act
     redirect('/admin?welcome=1');
   });
 }
+
+// Account recovery for a locked-out owner: with the ADMIN_SETUP_TOKEN secret, sets a new password
+// for a Super Admin email (creating that Super Admin if it does not exist yet). Works only while the
+// token is set in the hosting environment; remove it afterwards.
+export async function recoverAccess(_: ActionState, fd: FormData): Promise<ActionState> {
+  return guard(async () => {
+    const secret = process.env.ADMIN_SETUP_TOKEN || '';
+    const given = str(fd, 'setup_token');
+    const { ip } = await requestMeta();
+    if (!(await rateLimit('recover-ip', ip, 10, 60 * 60))) throw new UserError('Too many attempts. Please wait an hour.');
+    if (secret.length < 16) throw new UserError('Account recovery is switched off. Set ADMIN_SETUP_TOKEN (at least 16 characters) in the hosting environment and redeploy.');
+    const a = Buffer.from(sha256(given)), b = Buffer.from(sha256(secret));
+    if (!timingSafeEqual(a, b)) throw new UserError('The setup code is not correct.');
+    const data = z
+      .object({
+        name: z.string().trim().min(2, 'Enter your name').max(100),
+        email: z.string().trim().toLowerCase().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Enter a valid email address').max(200),
+        password: zPassword,
+      })
+      .parse({ name: str(fd, 'name'), email: str(fd, 'email'), password: String(fd.get('password') || '') });
+    if (data.password !== String(fd.get('confirm') || '')) throw new UserError('The two passwords do not match.');
+    const hash = await hashPassword(data.password);
+    const [u] = await db()`insert into admin_users (email, name, password_hash, role, status)
+                           values (${data.email}, ${data.name}, ${hash}, 'super_admin', 'active')
+                           on conflict (email) do update set password_hash = excluded.password_hash, role = 'super_admin', status = 'active',
+                             failed_logins = 0, locked_until = null, updated_at = now()
+                           returning id, (xmax = 0) as created`;
+    await db()`delete from admin_sessions where user_id = ${u.id}`;
+    await db()`update auth_tokens set used_at = now() where user_id = ${u.id} and used_at is null`;
+    const me = { id: u.id, name: data.name, email: data.email, role: 'super_admin' as const, status: 'active' as const };
+    await logActivity(me, 'auth.recover', u.created ? `Created Super Admin ${data.email} with the setup code` : `Recovered Super Admin access for ${data.email} with the setup code`);
+    await createSession(u.id);
+    redirect('/admin?welcome=1');
+  });
+}

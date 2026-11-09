@@ -19,7 +19,7 @@ The site now needs a Node server and a database (it is no longer a static export
 
 ### 2. Create the first Super Admin
 
-Open `https://<your-site>/admin/setup`, enter the setup code (`ADMIN_SETUP_TOKEN`), your name, email and a password (at least 12 characters, with letters and numbers or symbols). This page only works while no administrator exists; afterwards it is closed for good. You can then delete `ADMIN_SETUP_TOKEN` from Vercel.
+Open `https://<your-site>/admin/setup`, enter the setup code (`ADMIN_SETUP_TOKEN`), your name, email and a password (at least 8 characters, with letters and numbers or symbols). This page only works while no administrator exists; afterwards it is closed for good. You can then delete `ADMIN_SETUP_TOKEN` from Vercel.
 
 Alternative from a computer with the repository: `DATABASE_URL=… npm run admin:create` asks for the details in the terminal (the password is not shown or stored in any file).
 
@@ -40,7 +40,7 @@ Alternative from a computer with the repository: `DATABASE_URL=… npm run admin
 
 ### Locked out?
 
-If every Super Admin has lost access, someone with the database address can run `DATABASE_URL=… npm run admin:create` with an existing email to set a new password and restore Super Admin access.
+If every Super Admin has lost access: set `ADMIN_SETUP_TOKEN` in Vercel again, redeploy, open `/admin/recover`, and enter the setup code with your email and a new password (an unknown email becomes a new Super Admin). Remove the token afterwards. Alternatively, someone with the database address can run `DATABASE_URL=… npm run admin:create` with an existing email to set a new password and restore Super Admin access.
 
 ### Environment variables
 

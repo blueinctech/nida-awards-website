@@ -23,8 +23,8 @@ export default async function SetupPage() {
             <div className="f"><label htmlFor="setup_token">Setup code</label><input id="setup_token" name="setup_token" type="password" autoComplete="off" required /></div>
             <div className="f"><label htmlFor="name">Your name</label><input id="name" name="name" autoComplete="name" required /></div>
             <div className="f"><label htmlFor="email">Your email</label><input id="email" name="email" type="email" autoComplete="username" required /></div>
-            <div className="f"><label htmlFor="password">Password</label><input id="password" name="password" type="password" autoComplete="new-password" minLength={12} required /><p className="f-hint">At least 12 characters, with letters and numbers or symbols.</p></div>
-            <div className="f"><label htmlFor="confirm">Repeat the password</label><input id="confirm" name="confirm" type="password" autoComplete="new-password" minLength={12} required /></div>
+            <div className="f"><label htmlFor="password">Password</label><input id="password" name="password" type="password" autoComplete="new-password" minLength={8} required /><p className="f-hint">At least 8 characters, with letters and numbers or symbols.</p></div>
+            <div className="f"><label htmlFor="confirm">Repeat the password</label><input id="confirm" name="confirm" type="password" autoComplete="new-password" minLength={8} required /></div>
             <Submit className="btn btn--primary btn--block">Create Super Admin</Submit>
           </ActionForm>
         </>
