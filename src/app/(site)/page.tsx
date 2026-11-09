@@ -64,7 +64,7 @@ function Hero({ s }: { s: Site }) {
             height={bg.variants[bg.variants.length - 1].h}
             alt=""
             decoding="async"
-            fetchPriority="low"
+            fetchPriority="high"
           />
         ) : null}
       </div>
@@ -434,6 +434,8 @@ export default async function HomePage() {
   const jsonld = {
     '@context': 'https://schema.org',
     '@graph': [
+      // Tells search engines the site's name for results ("NIDA Awards" rather than the domain)
+      { '@type': 'WebSite', name: 'NIDA Awards', alternateName: ['NIDA', 'Nigerians in Diaspora Awards'], url: SITE_URL + '/' },
       {
         '@type': 'Organization',
         name: 'NIDA, Nigerians in Diaspora Awards',

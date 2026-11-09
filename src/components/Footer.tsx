@@ -14,7 +14,7 @@ export default async function Footer() {
         <div className="site-footer__about">
           <a className="brand" href={page('')} aria-label="NIDA home">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={asset('img/brand/nida-logo-white.png')} width={726} height={201} alt="NIDA, Nigerians in Diaspora Awards" loading="lazy" />
+            <img src={asset('img/brand/nida-logo-white-340.png')} width={340} height={94} alt="NIDA, Nigerians in Diaspora Awards" loading="lazy" />
           </a>
           <p style={{ maxWidth: '34ch' }}>{fill(f.tagline, vars)}</p>
           <div className="social"><SocialLinks /></div>

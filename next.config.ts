@@ -16,6 +16,13 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       { source: '/:path*', headers: [...security, { key: 'X-Frame-Options', value: 'SAMEORIGIN' }] },
+      // Keep the *.vercel.app copy of the site out of search results; only the real domain is indexed
+      { source: '/:path*', has: [{ type: 'host', value: '.*\\.vercel\\.app' }], headers: [{ key: 'X-Robots-Tag', value: 'noindex' }] },
+      // Let browsers reuse static files between visits. Fonts never change; photos rarely do,
+      // and stale-while-revalidate picks up a replaced file on the next visit.
+      { source: '/assets/fonts/:path*', headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }] },
+      { source: '/assets/img/:path*', headers: [{ key: 'Cache-Control', value: 'public, max-age=604800, stale-while-revalidate=2592000' }] },
+      { source: '/assets/js/:path*', headers: [{ key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' }] },
       {
         source: '/admin/:path*',
         headers: [
