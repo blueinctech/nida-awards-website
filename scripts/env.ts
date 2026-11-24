@@ -1,5 +1,7 @@
-// Loads .env.local (if present) for command-line scripts, the way `next dev` does for the app.
-// Variables already set in the environment win.
+// Loads the env file for command-line scripts, the way Next.js does for the app:
+// .env.local first, then .env.production, then .env. Values already set win.
 import { existsSync } from 'node:fs';
 
-if (existsSync('.env.local') && typeof process.loadEnvFile === 'function') process.loadEnvFile('.env.local');
+for (const f of ['.env.local', '.env.production', '.env']) {
+  if (existsSync(f) && typeof process.loadEnvFile === 'function') process.loadEnvFile(f);
+}

@@ -11,6 +11,7 @@
     "db:backup": "tsx scripts/backup.ts",
     "db:copy": "tsx scripts/copy-database.ts",
     "media:move-to-s3": "tsx scripts/move-blob-to-s3.ts",
+    "move:check": "tsx scripts/check-move.ts",
     "admin:create": "tsx scripts/create-admin.ts",
     "images": "python3 tools/optimize_images.py && python3 tools/make_hero_wall.py && python3 tools/make_og.py",
     "share-images": "node tools/make_share.js"

@@ -63,7 +63,7 @@ async function main() {
         await tx.unsafe(`select setval(pg_get_serial_sequence('"${t}"', 'id'), coalesce((select max(id) from "${t}"), 0) + 1, false)`);
       }
     });
-    console.log('[copy] done. Next: npm run media:move-to-s3 (see README, "Moving to Hostinger").');
+    console.log('[copy] done. Next: npm run media:move-to-s3 (see deploy/MOVE-TO-HOSTINGER.md).');
   } finally {
     await src.end();
     await dst.end();

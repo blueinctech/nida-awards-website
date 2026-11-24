@@ -48,7 +48,7 @@ It is hosted on **Hostinger** (a plan with Node.js web apps, or a VPS). Nothing 
   "Version": "2012-10-17",
   "Statement": [
     { "Effect": "Allow", "Action": ["s3:PutObject", "s3:GetObject", "s3:DeleteObject"], "Resource": "arn:aws:s3:::BUCKET/*" },
-    { "Effect": "Allow", "Action": ["ses:SendEmail", "ses:SendRawEmail"], "Resource": "*" }
+    { "Effect": "Allow", "Action": ["ses:SendEmail", "ses:SendRawEmail", "ses:GetAccount", "ses:GetEmailIdentity"], "Resource": "*" }
   ]
 }
 ```
@@ -59,7 +59,7 @@ Then **Security credentials → Create access key** (use case: application runni
 **Hostinger web hosting with Node.js apps (Business or Cloud plans):**
 1. hPanel → **Websites** → **Add website** → **Node.js Apps**. Choose **Import Git repository**, connect GitHub and pick `nida-awards-website`, branch `main`. (Or upload a ZIP of the repository without `node_modules`, `.next` and `.env*`.)
 2. Build settings: framework **Next.js**, Node version **20.x or 22.x**, build command `npm run build`, start command `npm start`, output directory `.next`.
-3. **Environment variables**: add every variable from the table below (at least `DATABASE_URL`, `S3_BUCKET`, `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `ADMIN_URL`, `SITE_URL`, plus `EMAIL_FROM` for email). They are used both while building and while running.
+3. **Environment variables**: add every line of the filled-in `deploy/hostinger.env` (or, when uploading a ZIP, include it renamed to `.env`), that is every variable from the table below (at least `DATABASE_URL`, `S3_BUCKET`, `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `ADMIN_URL`, `SITE_URL`, plus `EMAIL_FROM` for email). They are used both while building and while running.
 4. **Deploy**. Every build first runs the database migrations (`npm run build` = migrations + `next build`). A brand-new empty database is filled with the launch content; a copied database is left as it is.
 5. Connect the domain `nida-awards.org` to the app in hPanel and switch on the free SSL certificate. The admin sign-in cookie needs HTTPS.
 
@@ -69,7 +69,7 @@ Then **Security credentials → Create access key** (use case: application runni
 curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash - && sudo apt-get install -y nodejs nginx
 sudo npm install -g pm2
 git clone https://github.com/blueinctech/nida-awards-website.git && cd nida-awards-website
-nano .env.local            # paste the variables from the table below (this file is never committed)
+nano .env                  # paste the filled-in deploy/hostinger.env (never committed)
 npm ci && npm run build
 pm2 start npm --name nida -- start && pm2 save && pm2 startup
 ```
@@ -105,7 +105,7 @@ If every Super Admin has lost access: set `ADMIN_SETUP_TOKEN` in the host's envi
 
 ### Environment variables
 
-Set these in Hostinger (hPanel → the Node.js app → **Environment variables**, or `.env.local` on a VPS). For the move scripts and local development, put them in `.env.local` in the repository folder (the file must be named exactly `.env.local`, not `.env.local.txt`).
+A ready-to-fill file with all of these is [`deploy/hostinger.env`](deploy/hostinger.env). On Hostinger, upload the filled-in copy as `.env` in the site's folder, or paste the lines into hPanel → the Node.js app → **Environment variables**. For the move scripts and local development, use `.env.local` in the repository folder (named exactly `.env.local`, not `.env.local.txt`).
 
 | Name | Required | What it is |
 | --- | --- | --- |
@@ -120,7 +120,7 @@ Set these in Hostinger (hPanel → the Node.js app → **Environment variables**
 | `SES_REGION` | optional | Only if SES is in a different region from the bucket. |
 | `S3_PUBLIC_URL` | optional | CloudFront or custom address for public files. Defaults to `https://BUCKET.s3.REGION.amazonaws.com`. |
 | `ADMIN_SETUP_TOKEN` | first setup only | Secret code for `/admin/setup` and `/admin/recover`, 16+ characters. Remove it when done. |
-| `SOURCE_DATABASE_URL` | move only | The old (Vercel) database, read by `npm run db:copy`. Only in `.env.local` on your computer, never on the server. |
+| `SOURCE_DATABASE_URL`, `BLOB_READ_WRITE_TOKEN` | move only | The old Vercel database and Blob store token, read by the move commands. Only in `.env.local` on your computer, never on the server. |
 | `RESEND_API_KEY` | optional | Alternative to SES. SES is used when both are set. |
 
 None of these values are ever sent to the browser. Never commit them to the repository.
@@ -135,31 +135,19 @@ Uploaded files stay in the S3 bucket, separate from the database; the backup lis
 
 ## Moving to Hostinger
 
-The site was first hosted on Vercel, with a Neon database and a Vercel Blob store that Vercel created and connected itself. This is how to move everything, without losing content, administrators or uploads. Keep the Vercel site running until the last step.
+The site was first hosted on Vercel, with a Neon database and a Vercel Blob store that Vercel created itself. The full move (every database row to the new Neon database, every Blob file to S3, the code to Hostinger, then the domain) is a step-by-step checklist in **[deploy/MOVE-TO-HOSTINGER.md](deploy/MOVE-TO-HOSTINGER.md)**.
 
-1. **Prepare the new services**: a new Neon project, the S3 bucket, SES and the IAM access key, as in [Prepare the services](#1-prepare-the-services).
-2. **Get the old database address**: Vercel → the project → **Settings → Environment Variables** → reveal `DATABASE_URL` (or `POSTGRES_URL`). You only need it on your own computer, for the copy.
-3. **On your computer**, in the repository folder (with this version of the code), create `.env.local` with:
-   ```
-   SOURCE_DATABASE_URL=
-   DATABASE_URL=
-   S3_BUCKET=
-   AWS_REGION=
-   AWS_ACCESS_KEY_ID=
-   AWS_SECRET_ACCESS_KEY=
-   ```
-   `SOURCE_DATABASE_URL` is the old database from Vercel and `DATABASE_URL` the new Neon one. Then run:
-   ```bash
-   npm install
-   npm run db:copy                          # creates the tables in the new database and copies every row
-   npm run media:move-to-s3 -- --dry-run    # lists the Blob files it will move
-   npm run media:move-to-s3                 # copies them to S3 and updates every address in the database
-   ```
-   `db:copy` refuses to touch a database that already has content, and does everything in one transaction. `media:move-to-s3` leaves the Blob store untouched and can be run again safely. Administrators keep their passwords; everyone just signs in again.
-4. **Deploy on Hostinger** as in [Deploy on Hostinger](#2-deploy-on-hostinger), with the new `DATABASE_URL` (not `SOURCE_DATABASE_URL`).
-5. **Check** the temporary Hostinger address: home page images, an awardee page, sign in at `/admin`, upload a test image in Media, and open a nomination file. Under System & backups, File storage should say *Amazon S3* and Email should say *OK*.
-6. **Switch the domain**: point `nida-awards.org` at Hostinger (in hPanel, or update the DNS A record), and enable SSL.
-7. After a week or two without problems, delete the Vercel project, its Neon database and Blob store, and remove `SOURCE_DATABASE_URL` from your `.env.local`. If anything changed on the old site between step 3 and step 6 (for example a new nomination), run step 3 again into a fresh, empty Neon branch before switching.
+Settings files to fill in (never commit the filled-in copies; `.env` files are ignored by git):
+- `deploy/hostinger.env`: everything the live site needs. Upload as `.env`, or paste into hPanel's Environment variables.
+- `deploy/move-from-vercel.env`: for the one-time move on your computer, saved as `.env.local`. Adds the old database address and the old Blob token.
+
+The move commands:
+```bash
+npm run db:copy                          # old database (SOURCE_DATABASE_URL) -> new empty one (DATABASE_URL)
+npm run media:move-to-s3 -- --dry-run    # lists every Blob file it will copy
+npm run media:move-to-s3                 # copies every Blob file to S3 and rewrites the addresses
+npm run move:check                       # confirms nothing is left on Vercel
+```
 
 ## Local development
 
