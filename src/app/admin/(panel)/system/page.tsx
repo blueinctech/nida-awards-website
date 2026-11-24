@@ -32,7 +32,7 @@ export default async function SystemPage() {
         <Card title="Services">
           <dl className="meta-list">
             <div><dt>Database</dt><dd>{ok(true, `${provider} connected, ${fmtSize(Number(c.db_bytes))} used.`, '')}</dd></div>
-            <div><dt>File storage</dt><dd>{storage === 'blob' ? ok(true, 'Vercel Blob. Uploads are kept outside the database.', '') : storage === 'local' ? ok(true, 'Server disk (local development or a self-managed server).', '') : ok(false, '', 'No Blob token found, so uploads are disabled. In Vercel, connect the Blob store to this project for the Production environment (it adds BLOB_STORE_ID), then redeploy.')}</dd></div>
+            <div><dt>File storage</dt><dd>{storage === 's3' ? ok(true, 'Amazon S3 bucket. Uploads are kept outside the database.', '') : storage === 'local' ? ok(true, 'Server disk (local development or a self-managed server).', '') : ok(false, '', 'No S3 bucket set, so uploads are disabled. Set S3_BUCKET, AWS_REGION, AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY on the server, then restart the app.')}</dd></div>
             <div><dt>Email</dt><dd>{ok(emailEnabled(), 'Invitations, password resets and new-submission alerts are emailed.', 'Not set up. Invitation and reset links are shown here for you to send yourself, and new submissions appear in the admin only.')}</dd></div>
             <div><dt>Uploaded files</dt><dd>{c.media} items in the media library, {fmtSize(Number(c.media_bytes))} uploaded.</dd></div>
           </dl>
@@ -53,7 +53,7 @@ export default async function SystemPage() {
         <ol className="plain-list">
           <li><b>Automatic database history.</b> The hosted database (Neon) keeps a restorable history of every change. Its owner can restore the database to any moment in that window from the Neon console (Branches → Restore).</li>
           <li><b>Download a full backup.</b> A Super Admin can download every record (content, awardees, events, articles, nominations, messages, media list and activity) as one JSON file. Passwords are never included. Keep a copy somewhere safe, for example once a month and before big changes.</li>
-          <li><b>Files.</b> Uploaded images and documents live in the Vercel Blob store, which keeps them separately from the database. The JSON backup lists the address of every file.</li>
+          <li><b>Files.</b> Uploaded images and documents live in the Amazon S3 bucket, which keeps them separately from the database. The JSON backup lists the address of every file.</li>
         </ol>
         {can(user.role, 'backup') ? (
           <p className="btn-stack">

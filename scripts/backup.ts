@@ -1,6 +1,6 @@
 // Writes a complete JSON backup of the CMS database (content, awardees, submissions, and the
 // administrator list without password hashes) to backups/nida-backup-<date>.json.
-// Uploaded files stay in Vercel Blob and are referenced by URL.
+// Uploaded files stay in the S3 bucket and are referenced by URL.
 //   DATABASE_URL=… npm run db:backup
 import './env';
 import postgres from 'postgres';

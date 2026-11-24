@@ -3,7 +3,7 @@ import sharp from 'sharp';
 import { putFile, randomName } from './storage';
 import type { Img } from '../types';
 
-export const MAX_UPLOAD_BYTES = 4 * 1024 * 1024; // Vercel functions accept request bodies up to 4.5 MB
+export const MAX_UPLOAD_BYTES = 4 * 1024 * 1024; // keeps uploads quick on modest hosting plans
 
 const DOC_TYPES: Record<string, { ext: string; magic: (b: Buffer) => boolean }> = {
   'application/pdf': { ext: 'pdf', magic: (b) => b.subarray(0, 5).toString('latin1') === '%PDF-' },
@@ -42,7 +42,7 @@ export async function checkFile(buf: Buffer, filename: string, allow: ('image' |
 const yearFolder = () => new Date().getFullYear();
 
 // Web sizes for any picture: 640, 1280 and 1920 pixels wide (never larger than the original)
-export async function makeWebVariants(buf: Buffer, prefix: string): Promise<{ variants: Img[]; keys: string[]; storage: 'blob' | 'local'; width: number; height: number }> {
+export async function makeWebVariants(buf: Buffer, prefix: string): Promise<{ variants: Img[]; keys: string[]; storage: 's3' | 'local'; width: number; height: number }> {
   const base = sharp(buf).rotate();
   const meta = await base.clone().metadata();
   const oriented = (meta.orientation || 1) >= 5;
@@ -52,7 +52,7 @@ export async function makeWebVariants(buf: Buffer, prefix: string): Promise<{ va
   if (widths.length < 3 && W <= 1920) widths.push(W);
   const variants: Img[] = [];
   const keys: string[] = [];
-  let storage: 'blob' | 'local' = 'local';
+  let storage: 's3' | 'local' = 'local';
   const id = randomName('');
   for (const w of [...new Set(widths)].sort((a, b) => a - b)) {
     const out = await base.clone().resize({ width: w, withoutEnlargement: true }).webp({ quality: 80 }).toBuffer({ resolveWithObject: true });

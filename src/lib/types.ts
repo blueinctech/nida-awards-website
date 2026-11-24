@@ -17,7 +17,7 @@ export interface Media {
   url: string;
   variants: Img[]; // smallest first
   extra: { og?: string; faces?: Img[]; portrait?: Img[]; keys?: string[] };
-  storage: 'static' | 'blob' | 'local';
+  storage: 'static' | 's3' | 'blob' | 'local';
   gallery: boolean;
   galleryYear: number | null;
   sortOrder: number;

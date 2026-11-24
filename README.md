@@ -7,23 +7,84 @@ The nida-awards.org website and its admin dashboard (CMS), built with [Next.js](
 
 ## Admin CMS setup
 
-The site now needs a Node server and a database (it is no longer a static export, so uploading `out/` to a plain web host no longer works). The recommended setup is **Vercel** with a **Neon Postgres** database and a **Vercel Blob** store, all created from the Vercel dashboard. The free tiers are enough for NIDA.
+The site needs a Node.js server (Node 20.9 or newer) and three services:
 
-### 1. Deploy and connect storage
+- **Neon Postgres** for all content, awardees, nominations and administrators (`DATABASE_URL`).
+- **Amazon S3** for uploaded images and documents (`S3_BUCKET` and the AWS keys).
+- **Amazon SES** for invitation, password-reset and new-submission emails (optional, `EMAIL_FROM`).
 
-1. In [Vercel](https://vercel.com/new), import the GitHub repository `nida-awards-website`. Keep the defaults (framework Next.js, build command `npm run build`).
-2. In the project, open **Storage** → **Create Database** → **Neon (Postgres)**, and connect it to the project. This sets `DATABASE_URL` for you.
-3. Still in **Storage**, create a **Blob** store and connect it. This sets `BLOB_STORE_ID` (or `BLOB_READ_WRITE_TOKEN` on older setups). Uploaded images and documents are stored there, not in the database.
-4. In **Settings → Environment Variables**, add `ADMIN_SETUP_TOKEN` with a long random value (at least 16 characters, for example from a password manager). Keep it private: it is only needed once, to create the first administrator.
-5. Redeploy (**Deployments** → ⋯ → **Redeploy**). Every build first runs the database migrations. On the very first build the database is filled with the current website content (texts, awardees, events, photos), so the site looks exactly as before.
+It is hosted on **Hostinger** (a plan with Node.js web apps, or a VPS). Nothing in the code depends on Vercel any more. The whole move from Vercel is described step by step in **[Moving to Hostinger](#moving-to-hostinger)** below.
 
-### 2. Create the first Super Admin
+### 1. Prepare the services
 
-Open `https://<your-site>/admin/setup`, enter the setup code (`ADMIN_SETUP_TOKEN`), your name, email and a password (at least 8 characters, with letters and numbers or symbols). This page only works while no administrator exists; afterwards it is closed for good. You can then delete `ADMIN_SETUP_TOKEN` from Vercel.
+**Neon.** In the [Neon console](https://console.neon.tech) create a project (choose the region closest to the Hostinger server, for example AWS Europe London or Frankfurt). On the project dashboard click **Connect**, tick **Connection pooling**, and copy the connection string. It looks like `postgresql://USER:PASSWORD@ep-xxxx-pooler.REGION.aws.neon.tech/neondb?sslmode=require`. That is `DATABASE_URL`.
+
+**S3 bucket.** In the AWS console → S3 → **Create bucket**:
+1. Name it (for example `nida-awards-media`) and pick a region (for example `eu-west-2`, London). Keep **ACLs disabled**.
+2. Under **Block Public Access**, untick only the two "bucket policies" boxes (the two "ACLs" boxes can stay ticked). Public images are read straight from the bucket; nomination uploads are never public.
+3. After creating it, open **Permissions → Bucket policy** and paste this (replace `BUCKET` with the bucket name):
+   ```json
+   {
+     "Version": "2012-10-17",
+     "Statement": [{
+       "Sid": "PublicWebsiteFiles",
+       "Effect": "Allow",
+       "Principal": "*",
+       "Action": "s3:GetObject",
+       "Resource": ["arn:aws:s3:::BUCKET/media/*", "arn:aws:s3:::BUCKET/documents/*"]
+     }]
+   }
+   ```
+   Files under `private/` (nomination photos and documents) stay private and are only shown to signed-in administrators through the admin.
+4. (Optional) To serve images from your own address or a CDN, put CloudFront in front of the bucket and set `S3_PUBLIC_URL` to that address.
+
+**SES.** In the AWS console → Amazon SES (same region is simplest):
+1. **Identities → Create identity → Domain** `nida-awards.org`. Add the three DKIM CNAME records it shows at your DNS provider and wait until the identity says *Verified*.
+2. New SES accounts are in the *sandbox* and can only send to verified addresses. Open **Account dashboard → Request production access** (transactional email, a few messages a day) so invitations and alerts reach anyone.
+
+**AWS access key.** In IAM create a user (for example `nida-website`) with no console access and attach this inline policy (replace `BUCKET`):
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    { "Effect": "Allow", "Action": ["s3:PutObject", "s3:GetObject", "s3:DeleteObject"], "Resource": "arn:aws:s3:::BUCKET/*" },
+    { "Effect": "Allow", "Action": ["ses:SendEmail", "ses:SendRawEmail"], "Resource": "*" }
+  ]
+}
+```
+Then **Security credentials → Create access key** (use case: application running outside AWS). That gives `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. The secret is shown once: put it straight into Hostinger's environment variables and your local `.env.local`, never in chat, email or the repository.
+
+### 2. Deploy on Hostinger
+
+**Hostinger web hosting with Node.js apps (Business or Cloud plans):**
+1. hPanel → **Websites** → **Add website** → **Node.js Apps**. Choose **Import Git repository**, connect GitHub and pick `nida-awards-website`, branch `main`. (Or upload a ZIP of the repository without `node_modules`, `.next` and `.env*`.)
+2. Build settings: framework **Next.js**, Node version **20.x or 22.x**, build command `npm run build`, start command `npm start`, output directory `.next`.
+3. **Environment variables**: add every variable from the table below (at least `DATABASE_URL`, `S3_BUCKET`, `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `ADMIN_URL`, `SITE_URL`, plus `EMAIL_FROM` for email). They are used both while building and while running.
+4. **Deploy**. Every build first runs the database migrations (`npm run build` = migrations + `next build`). A brand-new empty database is filled with the launch content; a copied database is left as it is.
+5. Connect the domain `nida-awards.org` to the app in hPanel and switch on the free SSL certificate. The admin sign-in cookie needs HTTPS.
+
+**Hostinger VPS (any Linux VPS):**
+```bash
+# once: Node 22 and PM2
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash - && sudo apt-get install -y nodejs nginx
+sudo npm install -g pm2
+git clone https://github.com/blueinctech/nida-awards-website.git && cd nida-awards-website
+nano .env.local            # paste the variables from the table below (this file is never committed)
+npm ci && npm run build
+pm2 start npm --name nida -- start && pm2 save && pm2 startup
+```
+Then point Nginx at `http://127.0.0.1:3000` (`proxy_pass`, with `proxy_set_header Host $host; proxy_set_header X-Forwarded-Proto $scheme;`) and add HTTPS with `sudo certbot --nginx -d nida-awards.org -d www.nida-awards.org`. To update later: `git pull && npm ci && npm run build && pm2 restart nida`.
+
+### 3. Create the first Super Admin
+
+Not needed if you copied the old database (your administrators and passwords come with it).
+
+For a new database: open `https://<your-site>/admin/setup`, enter the setup code (`ADMIN_SETUP_TOKEN`), your name, email and a password (at least 8 characters, with letters and numbers or symbols). This page only works while no administrator exists; afterwards it is closed for good. You can then remove `ADMIN_SETUP_TOKEN` from the environment variables.
 
 Alternative from a computer with the repository: `DATABASE_URL=… npm run admin:create` asks for the details in the terminal (the password is not shown or stored in any file).
 
-### 3. Daily use
+### 4. Daily use
+
 
 - **Sign in** at `/admin` (the sign-in page is `/admin/login`). Sessions end after 12 hours without activity. After 5 wrong passwords an account is locked for 15 minutes.
 - **Change your password**: My account → Change password. Other devices are signed out.
@@ -40,18 +101,27 @@ Alternative from a computer with the repository: `DATABASE_URL=… npm run admin
 
 ### Locked out?
 
-If every Super Admin has lost access: set `ADMIN_SETUP_TOKEN` in Vercel again, redeploy, open `/admin/recover`, and enter the setup code with your email and a new password (an unknown email becomes a new Super Admin). Remove the token afterwards. Alternatively, someone with the database address can run `DATABASE_URL=… npm run admin:create` with an existing email to set a new password and restore Super Admin access.
+If every Super Admin has lost access: set `ADMIN_SETUP_TOKEN` in the host's environment variables again, redeploy (or restart), open `/admin/recover`, and enter the setup code with your email and a new password (an unknown email becomes a new Super Admin). Remove the token afterwards. Alternatively, someone with the database address can run `DATABASE_URL=… npm run admin:create` with an existing email to set a new password and restore Super Admin access.
 
 ### Environment variables
 
+Set these in Hostinger (hPanel → the Node.js app → **Environment variables**, or `.env.local` on a VPS). For the move scripts and local development, put them in `.env.local` in the repository folder (the file must be named exactly `.env.local`, not `.env.local.txt`).
+
 | Name | Required | What it is |
 | --- | --- | --- |
-| `DATABASE_URL` | yes | Postgres connection string (set by the Neon integration). |
-| `BLOB_STORE_ID` or `BLOB_READ_WRITE_TOKEN` | yes on Vercel | Vercel Blob store for uploads, set when the Blob store is connected (newer projects get `BLOB_STORE_ID` and sign in with OIDC; older ones a read-write token). Locally, files go to `.data/uploads` instead. |
-| `ADMIN_SETUP_TOKEN` | first setup only | Secret code for `/admin/setup`. Remove it after creating the first Super Admin. |
-| `RESEND_API_KEY`, `EMAIL_FROM` | optional | Sends invitations, password resets and new-submission alerts with [Resend](https://resend.com) (`EMAIL_FROM` like `NIDA <admin@nida-awards.org>`, on a domain verified in Resend). Without them, links are shown in the admin to copy. |
-| `ADMIN_URL` | optional | Address used in emailed links, for example `https://nida-awards.org`. Defaults to the Vercel production address. |
-| `SITE_URL` | optional | Canonical public address used in share tags and the sitemap. Defaults to `https://nida-awards.org`. |
+| `DATABASE_URL` | yes | Neon connection string (the pooled one, ending in `?sslmode=require`). |
+| `S3_BUCKET` | yes | Name of the S3 bucket for uploads, for example `nida-awards-media`. Without it, uploads are saved to the server disk (`.data/uploads`), which is only for local development. |
+| `AWS_REGION` | yes | Region of the bucket (and of SES unless `SES_REGION` is set), for example `eu-west-2`. |
+| `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | yes | Access key of the IAM user above (S3 and SES permissions only). |
+| `ADMIN_URL` | yes | Address used in emailed links, for example `https://nida-awards.org`. |
+| `SITE_URL` | recommended | Canonical public address for share tags and the sitemap. Defaults to `https://nida-awards.org`. |
+| `EMAIL_FROM` | for email | Sender, for example `NIDA <admin@nida-awards.org>`, on the domain verified in SES. Without it, invitation and reset links are shown in the admin to copy. |
+| `EMAIL_REPLY_TO` | optional | Reply-to address for emails. |
+| `SES_REGION` | optional | Only if SES is in a different region from the bucket. |
+| `S3_PUBLIC_URL` | optional | CloudFront or custom address for public files. Defaults to `https://BUCKET.s3.REGION.amazonaws.com`. |
+| `ADMIN_SETUP_TOKEN` | first setup only | Secret code for `/admin/setup` and `/admin/recover`, 16+ characters. Remove it when done. |
+| `SOURCE_DATABASE_URL` | move only | The old (Vercel) database, read by `npm run db:copy`. Only in `.env.local` on your computer, never on the server. |
+| `RESEND_API_KEY` | optional | Alternative to SES. SES is used when both are set. |
 
 None of these values are ever sent to the browser. Never commit them to the repository.
 
@@ -61,13 +131,41 @@ None of these values are ever sent to the browser. Never commit them to the repo
 2. **Manual download**: a Super Admin can download the whole content as JSON from System & backups (passwords are never included). Do this regularly, for example monthly and before large changes.
 3. **From a computer**: `DATABASE_URL=… npm run db:backup` writes the same JSON file to `backups/`.
 
-Uploaded files stay in the Blob store, separate from the database; the backup lists the address of each file.
+Uploaded files stay in the S3 bucket, separate from the database; the backup lists the address of each file. Turn on **Versioning** on the bucket to be able to recover deleted or replaced files.
+
+## Moving to Hostinger
+
+The site was first hosted on Vercel, with a Neon database and a Vercel Blob store that Vercel created and connected itself. This is how to move everything, without losing content, administrators or uploads. Keep the Vercel site running until the last step.
+
+1. **Prepare the new services**: a new Neon project, the S3 bucket, SES and the IAM access key, as in [Prepare the services](#1-prepare-the-services).
+2. **Get the old database address**: Vercel → the project → **Settings → Environment Variables** → reveal `DATABASE_URL` (or `POSTGRES_URL`). You only need it on your own computer, for the copy.
+3. **On your computer**, in the repository folder (with this version of the code), create `.env.local` with:
+   ```
+   SOURCE_DATABASE_URL=
+   DATABASE_URL=
+   S3_BUCKET=
+   AWS_REGION=
+   AWS_ACCESS_KEY_ID=
+   AWS_SECRET_ACCESS_KEY=
+   ```
+   `SOURCE_DATABASE_URL` is the old database from Vercel and `DATABASE_URL` the new Neon one. Then run:
+   ```bash
+   npm install
+   npm run db:copy                          # creates the tables in the new database and copies every row
+   npm run media:move-to-s3 -- --dry-run    # lists the Blob files it will move
+   npm run media:move-to-s3                 # copies them to S3 and updates every address in the database
+   ```
+   `db:copy` refuses to touch a database that already has content, and does everything in one transaction. `media:move-to-s3` leaves the Blob store untouched and can be run again safely. Administrators keep their passwords; everyone just signs in again.
+4. **Deploy on Hostinger** as in [Deploy on Hostinger](#2-deploy-on-hostinger), with the new `DATABASE_URL` (not `SOURCE_DATABASE_URL`).
+5. **Check** the temporary Hostinger address: home page images, an awardee page, sign in at `/admin`, upload a test image in Media, and open a nomination file. Under System & backups, File storage should say *Amazon S3* and Email should say *OK*.
+6. **Switch the domain**: point `nida-awards.org` at Hostinger (in hPanel, or update the DNS A record), and enable SSL.
+7. After a week or two without problems, delete the Vercel project, its Neon database and Blob store, and remove `SOURCE_DATABASE_URL` from your `.env.local`. If anything changed on the old site between step 3 and step 6 (for example a new nomination), run step 3 again into a fresh, empty Neon branch before switching.
 
 ## Local development
 
 ```bash
 npm install
-cp .env.example .env.local   # then set DATABASE_URL to a local or Neon Postgres database
+cp .env.example .env.local   # then set DATABASE_URL (and S3 settings, or leave S3_BUCKET empty to save uploads to .data/uploads)
 npm run db:migrate           # creates the tables and imports the launch content
 npm run dev                  # http://localhost:3000, admin at http://localhost:3000/admin
 npm run build && npm start   # production build

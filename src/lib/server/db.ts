@@ -2,7 +2,7 @@ import 'server-only';
 import postgres from 'postgres';
 
 // One shared connection pool per server instance. DATABASE_URL comes from the hosting
-// environment (on Vercel, the Neon integration sets it). It is never sent to the browser.
+// environment (a Neon connection string, set in the host's environment variables). It is never sent to the browser.
 const globalForDb = globalThis as unknown as { nidaSql?: postgres.Sql };
 
 export const hasDatabase = () => Boolean(process.env.DATABASE_URL);

@@ -31,9 +31,9 @@ export default async function MediaAdmin({ searchParams }: { searchParams: Promi
   const qs = new URLSearchParams(Object.entries({ q, kind, folder, gallery: gallery ? '1' : '' }).filter(([, v]) => v)).toString();
   return (
     <>
-      <PageHead title="Media library" description={`${n} file${n === 1 ? '' : 's'}. Images are stored in ${mode === 'blob' ? 'Vercel Blob' : mode === 'local' ? 'the server’s upload folder' : '— storage not set up'} in web-ready sizes.`} />
+      <PageHead title="Media library" description={`${n} file${n === 1 ? '' : 's'}. Images are stored in ${mode === 's3' ? 'Amazon S3' : mode === 'local' ? 'the server’s upload folder' : '— storage not set up'} in web-ready sizes.`} />
       {sp.deleted ? <p className="notice notice--ok" role="status">The file was deleted.</p> : null}
-      {mode === 'none' ? <p className="notice notice--error">Uploads are not possible yet: add a Vercel Blob store to the project (see System &amp; backups).</p> : null}
+      {mode === 'none' ? <p className="notice notice--error">Uploads are not possible yet: set S3_BUCKET and the AWS keys on the server (see System &amp; backups).</p> : null}
       {can(user.role, 'media') && mode !== 'none' ? <Uploader folder={folder || 'general'} /> : null}
       <form className="toolbar" role="search">
         <input className="input" type="search" name="q" defaultValue={q} placeholder="Search by title, file name or tag" aria-label="Search media" />

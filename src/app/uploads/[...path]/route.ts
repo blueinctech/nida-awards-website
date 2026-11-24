@@ -3,7 +3,7 @@ import path from 'node:path';
 import { uploadDir } from '@/lib/server/storage';
 
 // Serves files uploaded to the server's own disk (local development or a self-managed server).
-// On Vercel, uploads live in Vercel Blob and this route is not used. Private files are never served here.
+// In production, uploads live in Amazon S3 and this route is not used. Private files are never served here.
 const TYPES: Record<string, string> = { webp: 'image/webp', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', pdf: 'application/pdf', doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' };
 
 export async function GET(_req: Request, ctx: { params: Promise<{ path: string[] }> }) {

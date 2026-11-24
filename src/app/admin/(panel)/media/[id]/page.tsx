@@ -44,7 +44,7 @@ export default async function MediaItem({ params }: { params: Promise<{ id: stri
             <dl className="meta-list">
               <div><dt>File</dt><dd>{m.filename || '—'}</dd></div>
               {m.width ? <div><dt>Size</dt><dd>{m.width} × {m.height} px{m.size ? `, ${fmtSize(m.size)}` : ''}</dd></div> : m.size ? <div><dt>Size</dt><dd>{fmtSize(m.size)}</dd></div> : null}
-              <div><dt>Stored</dt><dd>{m.storage === 'static' ? 'Built into the website' : m.storage === 'blob' ? 'Vercel Blob' : 'Server upload folder'}</dd></div>
+              <div><dt>Stored</dt><dd>{m.storage === 'static' ? 'Built into the website' : m.storage === 's3' ? 'Amazon S3' : m.storage === 'blob' ? 'Vercel Blob (old, move it to S3)' : 'Server upload folder'}</dd></div>
               {m.kind === 'image' ? <div><dt>Web sizes</dt><dd>{m.variants.map((v) => `${v.w}px`).join(', ')}{m.extra.portrait ? ' · portrait crops' : ''}{m.extra.faces ? ' · face crops' : ''}</dd></div> : null}
               <div><dt>Added</dt><dd>{fmtDateTime(m.createdAt)}</dd></div>
             </dl>

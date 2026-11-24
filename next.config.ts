@@ -1,6 +1,6 @@
 import type { NextConfig } from 'next';
 
-// The site runs as a Next.js server (on Vercel), because the admin CMS needs sign-in, a database
+// The site runs as a Next.js server (Hostinger Node.js hosting, or any Node 20+ server), because the admin CMS needs sign-in, a database
 // and file uploads. Public pages are still pre-rendered and cached; publishing in /admin refreshes them.
 const security = [
   { key: 'X-Content-Type-Options', value: 'nosniff' },
