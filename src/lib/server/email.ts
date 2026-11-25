@@ -2,10 +2,13 @@ import 'server-only';
 import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 
 // Optional email sending through Amazon SES. Set EMAIL_FROM (an address or domain verified in SES)
-// and the AWS keys (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and SES_REGION or AWS_REGION).
+// and SES_ACCESS_KEY_ID, SES_SECRET_ACCESS_KEY, SES_REGION (falling back to the AWS_* keys and AWS_REGION,
+// for setups where one AWS key serves both S3 and SES).
 // Resend (RESEND_API_KEY) still works as an alternative. Without either, nothing is sent: password
 // reset and invitation links are shown to the Super Admin instead, who passes them on.
-const sesReady = () => Boolean(process.env.EMAIL_FROM && process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY && (process.env.SES_REGION || process.env.AWS_REGION));
+const sesKey = () => process.env.SES_ACCESS_KEY_ID || process.env.AWS_ACCESS_KEY_ID || '';
+const sesSecret = () => process.env.SES_SECRET_ACCESS_KEY || process.env.AWS_SECRET_ACCESS_KEY || '';
+const sesReady = () => Boolean(process.env.EMAIL_FROM && sesKey() && sesSecret() && (process.env.SES_REGION || process.env.AWS_REGION));
 const resendReady = () => Boolean(process.env.EMAIL_FROM && process.env.RESEND_API_KEY);
 export const emailEnabled = () => sesReady() || resendReady();
 
@@ -15,7 +18,7 @@ export async function sendEmail(to: string, subject: string, text: string): Prom
   if (!emailEnabled() || !to) return false;
   try {
     if (sesReady()) {
-      ses ??= new SESv2Client({ region: process.env.SES_REGION || process.env.AWS_REGION });
+      ses ??= new SESv2Client({ region: process.env.SES_REGION || process.env.AWS_REGION, credentials: { accessKeyId: sesKey(), secretAccessKey: sesSecret() } });
       await ses.send(new SendEmailCommand({
         FromEmailAddress: process.env.EMAIL_FROM,
         Destination: { ToAddresses: [to] },

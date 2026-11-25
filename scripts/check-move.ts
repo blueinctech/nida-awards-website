@@ -8,7 +8,8 @@
 //   - whether SES can send (domain verified, out of the sandbox)
 import './env';
 import postgres from 'postgres';
-import { S3Client, HeadObjectCommand } from '@aws-sdk/client-s3';
+import { HeadObjectCommand } from '@aws-sdk/client-s3';
+import { makeS3, s3Settings } from './s3';
 import { SESv2Client, GetAccountCommand, GetEmailIdentityCommand } from '@aws-sdk/client-sesv2';
 
 const TABLES = ['admin_users', 'activity_log', 'site_settings', 'media', 'award_categories', 'awardees', 'events', 'posts', 'nominations', 'nomination_files', 'nomination_notes', 'messages'];
@@ -19,9 +20,12 @@ const note = (m: string) => console.log('  NOTE  ' + m);
 
 async function main() {
   const env = process.env;
-  const region = env.S3_REGION || env.AWS_REGION || '';
+  const s3s = s3Settings();
   console.log('\nSettings');
-  for (const k of ['DATABASE_URL', 'S3_BUCKET', 'AWS_REGION', 'AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY', 'ADMIN_URL', 'SITE_URL', 'EMAIL_FROM']) (env[k] ? ok : bad)(`${k} ${env[k] ? 'is set' : 'is missing'}`);
+  for (const k of ['DATABASE_URL', 'S3_BUCKET', 'ADMIN_URL', 'SITE_URL', 'EMAIL_FROM']) (env[k] ? ok : bad)(`${k} ${env[k] ? 'is set' : 'is missing'}`);
+  (s3s.ready ? ok : bad)(s3s.ready ? `Bucket keys set (${s3s.endpoint ? new URL(s3s.endpoint).hostname : 'Amazon S3 ' + s3s.region})` : 'Bucket keys missing: S3_ENDPOINT, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY (or AWS_REGION and AWS_* keys)');
+  const sesKey = env.SES_ACCESS_KEY_ID || env.AWS_ACCESS_KEY_ID, sesSecret = env.SES_SECRET_ACCESS_KEY || env.AWS_SECRET_ACCESS_KEY, sesRegion = env.SES_REGION || env.AWS_REGION;
+  (sesKey && sesSecret && sesRegion ? ok : bad)(sesKey && sesSecret && sesRegion ? `SES keys set (${sesRegion})` : 'SES keys missing: SES_ACCESS_KEY_ID, SES_SECRET_ACCESS_KEY, SES_REGION');
   if (!env.DATABASE_URL) return;
   if (env.DATABASE_URL === env.SOURCE_DATABASE_URL) bad('DATABASE_URL is the old database. It must be the new Neon database.');
   if (/vercel/i.test(env.ADMIN_URL || '') || /vercel/i.test(env.SITE_URL || '')) bad('ADMIN_URL or SITE_URL still points at Vercel.');
@@ -55,8 +59,8 @@ async function main() {
     if (blobRows) bad(`${blobRows} media items are still marked as stored in Vercel Blob`);
 
     console.log('\nFiles in S3');
-    if (env.S3_BUCKET && region) {
-      const s3 = new S3Client({ region });
+    if (s3s.ready) {
+      const s3 = makeS3();
       const keys = [
         ...(await sql`select unnest(storage_keys) as k from media where storage = 's3'`).map((r) => r.k as string),
         ...(await sql`select storage_key as k from nomination_files where storage = 's3'`).map((r) => r.k as string),
@@ -68,28 +72,29 @@ async function main() {
       }
       (missing ? bad : ok)(`${keys.length - missing} of ${keys.length} uploaded files found in the bucket`);
       const [pub] = await sql`select url from media where storage = 's3' and kind = 'image' limit 1`;
-      if (pub) {
-        const res = await fetch(pub.url, { method: 'HEAD' }).catch(() => null);
+      if (pub && pub.url.startsWith('/') && !env.CHECK_SITE_URL) note(`Public images are served by the website (${pub.url}); set CHECK_SITE_URL to the Hostinger address to test one.`);
+      else if (pub) {
+        const res = await fetch(pub.url.startsWith('/') ? env.CHECK_SITE_URL!.replace(/\/$/, '') + pub.url : pub.url, { method: 'HEAD' }).catch(() => null);
         (res?.ok ? ok : bad)(res?.ok ? 'Public images open without signing in' : `Public image did not open (${res?.status ?? 'no answer'}). Check the bucket policy and Block Public Access settings.`);
       }
       const [priv] = await sql`select storage_key from nomination_files where storage = 's3' limit 1`;
       if (priv) {
-        const base = (env.S3_PUBLIC_URL || `https://${env.S3_BUCKET}.s3.${region}.amazonaws.com`).replace(/\/$/, '');
+        const base = s3s.endpoint ? `${s3s.endpoint.replace(/\/$/, '')}/${s3s.bucket}` : s3s.publicBase;
         const res = await fetch(base + '/' + priv.storage_key, { method: 'HEAD' }).catch(() => null);
         (res?.ok ? bad : ok)(res?.ok ? 'Nomination files are PUBLIC. Limit the bucket policy to media/* and documents/*.' : 'Nomination files are private');
       }
     }
 
     console.log('\nEmail (SES)');
-    if (env.EMAIL_FROM && (env.SES_REGION || region)) {
-      const ses = new SESv2Client({ region: env.SES_REGION || region });
+    if (env.EMAIL_FROM && sesKey && sesSecret && sesRegion) {
+      const ses = new SESv2Client({ region: sesRegion, credentials: { accessKeyId: sesKey, secretAccessKey: sesSecret } });
       const domain = (env.EMAIL_FROM.match(/@([^>\s]+)/) || [])[1];
       try {
         const acc = await ses.send(new GetAccountCommand({}));
         (acc.ProductionAccessEnabled ? ok : bad)(acc.ProductionAccessEnabled ? 'SES is out of the sandbox' : 'SES is still in the sandbox: it can only send to verified addresses. Request production access.');
         if (domain) {
           const id = await ses.send(new GetEmailIdentityCommand({ EmailIdentity: domain })).catch(() => null);
-          (id?.VerifiedForSendingStatus ? ok : bad)(id?.VerifiedForSendingStatus ? `${domain} is verified for sending` : `${domain} is not verified in SES (${env.SES_REGION || region})`);
+          (id?.VerifiedForSendingStatus ? ok : bad)(id?.VerifiedForSendingStatus ? `${domain} is verified for sending` : `${domain} is not verified in SES (${sesRegion})`);
         }
       } catch (e) {
         note(`Could not read the SES account (${(e as Error).name}). Add ses:GetAccount and ses:GetEmailIdentity to the IAM policy to check it here.`);

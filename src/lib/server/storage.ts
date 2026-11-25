@@ -16,19 +16,42 @@ import { siteOrigin } from './email';
 export type StorageMode = 's3' | 'local' | 'none';
 
 export const s3Bucket = () => process.env.S3_BUCKET || '';
-const s3Region = () => process.env.S3_REGION || process.env.AWS_REGION || 'eu-west-2';
+const s3Region = () => process.env.S3_REGION || process.env.AWS_REGION || (process.env.S3_ENDPOINT ? 'auto' : 'eu-west-2');
+
+// Works with Amazon S3 and with S3-compatible stores such as Neon Object Storage (set S3_ENDPOINT).
+// Keys: S3_ACCESS_KEY_ID / S3_SECRET_ACCESS_KEY, falling back to the AWS_* pair.
+export function s3ClientConfig() {
+  const env = process.env;
+  const accessKeyId = env.S3_ACCESS_KEY_ID || env.AWS_ACCESS_KEY_ID;
+  const secretAccessKey = env.S3_SECRET_ACCESS_KEY || env.AWS_SECRET_ACCESS_KEY;
+  return {
+    region: s3Region(),
+    endpoint: env.S3_ENDPOINT || undefined,
+    forcePathStyle: Boolean(env.S3_ENDPOINT),
+    requestChecksumCalculation: 'WHEN_REQUIRED' as const,
+    responseChecksumValidation: 'WHEN_REQUIRED' as const,
+    ...(accessKeyId && secretAccessKey ? { credentials: { accessKeyId, secretAccessKey } } : {}),
+  };
+}
 
 let client: S3Client | undefined;
 export function s3() {
-  // Credentials come from AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY (read by the AWS SDK itself)
-  client ??= new S3Client({ region: s3Region() });
+  client ??= new S3Client(s3ClientConfig());
   return client;
+}
+
+// Where public files are served from. With S3_PUBLIC_URL: that address (CDN). With an S3-compatible
+// endpoint (Neon) and no public address, the bucket stays private and the website serves the files
+// itself from /uploads/<key>. Otherwise: the Amazon S3 bucket address.
+export function s3PublicBase() {
+  if (process.env.S3_PUBLIC_URL) return process.env.S3_PUBLIC_URL.replace(/\/$/, '');
+  if (process.env.S3_ENDPOINT) return '/uploads';
+  return `https://${s3Bucket()}.s3.${s3Region()}.amazonaws.com`;
 }
 
 // The public address of a file in the bucket
 export function s3PublicUrl(key: string) {
-  const base = (process.env.S3_PUBLIC_URL || `https://${s3Bucket()}.s3.${s3Region()}.amazonaws.com`).replace(/\/$/, '');
-  return base + '/' + key.split('/').map(encodeURIComponent).join('/');
+  return s3PublicBase() + '/' + key.split('/').map(encodeURIComponent).join('/');
 }
 
 export function storageMode(): StorageMode {
@@ -101,8 +124,8 @@ export async function readFile(key: string, storage: string): Promise<Buffer> {
 
 // Reads any image the site shows (static file in /public, local upload or S3 address)
 export async function readImageByUrl(url: string): Promise<Buffer> {
-  if (url.startsWith('/uploads/')) return readFile(url.slice('/uploads/'.length), 'local');
-  const base = s3Bucket() ? s3PublicUrl('') : '';
+  if (url.startsWith('/uploads/')) return readFile(url.slice('/uploads/'.length).split('/').map(decodeURIComponent).join('/'), storageMode() === 's3' ? 's3' : 'local');
+  const base = s3Bucket() && /^https?:/.test(s3PublicBase()) ? s3PublicBase() + '/' : '';
   if (base && url.startsWith(base)) return readFile(url.slice(base.length).split('/').map(decodeURIComponent).join('/'), 's3');
   if (url.startsWith('/')) {
     // Files in /public are normally on disk; fall back to fetching them from the site

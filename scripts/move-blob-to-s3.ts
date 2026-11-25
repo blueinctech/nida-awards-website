@@ -1,7 +1,8 @@
 // Moves every file out of the old Vercel Blob store into the S3 bucket and updates the database
 // to point at the new addresses. Run it once, after `npm run db:copy`, from your computer, with
 // these in .env.local:
-//   DATABASE_URL (the NEW Neon database), S3_BUCKET, AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+//   DATABASE_URL (the NEW Neon database), S3_BUCKET, S3_ENDPOINT, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY
+//   (or, for Amazon S3: S3_BUCKET, AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
 //   BLOB_READ_WRITE_TOKEN (from the old Blob store: copies EVERY file in the store, not only
 //   the ones the database still uses)
 //   npm run media:move-to-s3 -- --dry-run   # only lists what would move
@@ -10,7 +11,8 @@
 // of every moved file is written to backups/.
 import './env';
 import postgres from 'postgres';
-import { S3Client, PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
+import { PutObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
+import { makeS3, publicUrl, s3Settings } from './s3';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
@@ -38,13 +40,11 @@ async function listWholeStore(): Promise<string[]> {
 }
 
 async function main() {
-  const { DATABASE_URL, S3_BUCKET } = process.env;
-  const region = process.env.S3_REGION || process.env.AWS_REGION;
-  if (!DATABASE_URL || !S3_BUCKET || !region) throw new Error('Set DATABASE_URL, S3_BUCKET, AWS_REGION, AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY first.');
+  const { DATABASE_URL } = process.env;
+  const { bucket: S3_BUCKET, ready } = s3Settings();
+  if (!DATABASE_URL || !ready) throw new Error('Set DATABASE_URL, S3_BUCKET, S3_ENDPOINT, S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY first.');
   if (process.env.SOURCE_DATABASE_URL && process.env.SOURCE_DATABASE_URL === DATABASE_URL) throw new Error('DATABASE_URL must be the NEW database, not the old one.');
-  const publicBase = (process.env.S3_PUBLIC_URL || `https://${S3_BUCKET}.s3.${region}.amazonaws.com`).replace(/\/$/, '');
-  const publicUrl = (key: string) => publicBase + '/' + key.split('/').map(encodeURIComponent).join('/');
-  const s3 = new S3Client({ region });
+  const s3 = makeS3();
   const sql = postgres(DATABASE_URL, { max: 1, prepare: false, onnotice: () => {} });
 
   try {

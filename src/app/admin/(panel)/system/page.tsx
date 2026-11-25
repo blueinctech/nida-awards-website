@@ -32,7 +32,7 @@ export default async function SystemPage() {
         <Card title="Services">
           <dl className="meta-list">
             <div><dt>Database</dt><dd>{ok(true, `${provider} connected, ${fmtSize(Number(c.db_bytes))} used.`, '')}</dd></div>
-            <div><dt>File storage</dt><dd>{storage === 's3' ? ok(true, 'Amazon S3 bucket. Uploads are kept outside the database.', '') : storage === 'local' ? ok(true, 'Server disk (local development or a self-managed server).', '') : ok(false, '', 'No S3 bucket set, so uploads are disabled. Set S3_BUCKET, AWS_REGION, AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY on the server, then restart the app.')}</dd></div>
+            <div><dt>File storage</dt><dd>{storage === 's3' ? ok(true, (process.env.S3_ENDPOINT ? 'S3-compatible bucket (' + new URL(process.env.S3_ENDPOINT).hostname + ')' : 'Amazon S3 bucket') + '. Uploads are kept outside the database.', '') : storage === 'local' ? ok(true, 'Server disk (local development or a self-managed server).', '') : ok(false, '', 'No S3 bucket set, so uploads are disabled. Set S3_BUCKET, S3_ENDPOINT, S3_ACCESS_KEY_ID and S3_SECRET_ACCESS_KEY on the server, then restart the app.')}</dd></div>
             <div><dt>Email</dt><dd>{ok(emailEnabled(), 'Invitations, password resets and new-submission alerts are emailed.', 'Not set up. Invitation and reset links are shown here for you to send yourself, and new submissions appear in the admin only.')}</dd></div>
             <div><dt>Uploaded files</dt><dd>{c.media} items in the media library, {fmtSize(Number(c.media_bytes))} uploaded.</dd></div>
           </dl>
